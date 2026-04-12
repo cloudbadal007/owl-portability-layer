@@ -1,0 +1,106 @@
+@prefix proc: <http://enterprise.org/procurement#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+proc: a owl:Ontology ;
+    rdfs:label "Enterprise procurement ontology"@en ;
+    rdfs:comment "Core OWL model for vendor-neutral procurement semantics used by the OWL Portability Layer."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+proc:Vendor a owl:Class ;
+    rdfs:label "Vendor"@en ;
+    rdfs:comment "A supplier or vendor organization that may be party to contracts."@en .
+
+proc:Contract a owl:Class ;
+    rdfs:label "Contract"@en ;
+    rdfs:comment "A legal agreement between the enterprise and a vendor, governing goods or services."@en .
+
+proc:PaymentEvent a owl:Class ;
+    rdfs:label "Payment event"@en ;
+    rdfs:comment "A discrete outbound or scheduled payment against a contract, possibly subject to holds."@en .
+
+proc:HoldStatus a owl:Class ;
+    rdfs:label "Hold status"@en ;
+    rdfs:comment "Abstract superclass for payment hold states that block or condition settlement."@en ;
+    owl:deprecated false .
+
+proc:ComplianceHold a owl:Class ;
+    rdfs:subClassOf proc:HoldStatus ;
+    rdfs:label "Compliance hold"@en ;
+    rdfs:comment "A regulatory or policy hold requiring documented approval before release."@en .
+
+proc:BudgetHold a owl:Class ;
+    rdfs:subClassOf proc:HoldStatus ;
+    rdfs:label "Budget hold"@en ;
+    rdfs:comment "A hold tied to budget availability or allocation gates."@en .
+
+proc:VendorDisputeHold a owl:Class ;
+    rdfs:subClassOf proc:HoldStatus ;
+    rdfs:label "Vendor dispute hold"@en ;
+    rdfs:comment "A hold opened due to an active dispute with the vendor."@en .
+
+#################################################################
+# Object properties
+#################################################################
+
+proc:hasHoldStatus a owl:ObjectProperty ;
+    rdfs:domain proc:PaymentEvent ;
+    rdfs:range proc:HoldStatus ;
+    rdfs:label "has hold status"@en ;
+    rdfs:comment "Links a payment event to its active hold state, if any."@en .
+
+proc:hasContract a owl:ObjectProperty ;
+    rdfs:domain proc:PaymentEvent ;
+    rdfs:range proc:Contract ;
+    rdfs:label "has contract"@en ;
+    rdfs:comment "Links a payment event to the contract under which it is made."@en .
+
+proc:hasVendor a owl:ObjectProperty ;
+    rdfs:domain proc:Contract ;
+    rdfs:range proc:Vendor ;
+    rdfs:label "has vendor"@en ;
+    rdfs:comment "Links a contract to the vendor that is party to the agreement."@en .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+proc:amountUSD a owl:DatatypeProperty ;
+    rdfs:domain proc:PaymentEvent ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "amount in USD"@en ;
+    rdfs:comment "Payment amount denominated in US dollars."@en .
+
+proc:holdApprovedBy a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "hold approved by"@en ;
+    rdfs:comment "Recorded on a hold (e.g. ComplianceHold) or on a high-value payment when policy requires approver identity on the payment itself."@en .
+
+proc:contractValue a owl:DatatypeProperty ;
+    rdfs:domain proc:Contract ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "contract value"@en ;
+    rdfs:comment "Total contract value in US dollars for threshold checks."@en .
+
+proc:vendorId a owl:DatatypeProperty ;
+    rdfs:domain proc:Vendor ;
+    rdfs:range xsd:string ;
+    rdfs:label "vendor identifier"@en ;
+    rdfs:comment "Stable enterprise identifier for the vendor."@en .
+
+proc:paymentId a owl:DatatypeProperty ;
+    rdfs:domain proc:PaymentEvent ;
+    rdfs:range xsd:string ;
+    rdfs:label "payment identifier"@en ;
+    rdfs:comment "Business key for the payment event."@en .
+
+proc:dualApprovalComplete a owl:DatatypeProperty ;
+    rdfs:domain proc:Contract ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "dual approval complete"@en ;
+    rdfs:comment "True when two independent approvers have signed off; required for high-value contracts."@en .
