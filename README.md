@@ -46,13 +46,23 @@ python examples/demo_validation.py
 - **Dict → RDF**: Payloads are lifted to RDF for validation, then passed unchanged to adapters when validation passes.
 - **Pluggable targets**: Register `PalantirFoundryAdapter`, `FabricIQAdapter`, or `MCPAdapter` under short keys; swap `target_platform` only.
 
-## Platform adapters
+## Platform Adapters
 
-| Adapter              | Role                                      | Default mode   |
-|---------------------|--------------------------------------------|----------------|
-| `PalantirFoundryAdapter` | OSDK-shaped writes/reads + `object_type_map` | Simulation     |
-| `FabricIQAdapter`      | IQ / workspace REST-shaped calls           | Simulation     |
-| `MCPAdapter`           | JSON-RPC `tools/call` to any MCP server    | Simulation     |
+| Platform | Adapter | Status |
+|---|---|---|
+| Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live |
+| Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live |
+| Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live |
+| ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live |
+
+All adapters work in simulation mode — zero platform credentials
+needed to run the demos.
+
+## Cross-Platform Validators
+
+| Validator | Use Case | Demo |
+|---|---|---|
+| `CrossPlatformOffboardingValidator` | Employee offboarding across ServiceNow + Salesforce + Microsoft | `examples/demo_offboarding_validation.py` |
 
 ## Running the demos
 
@@ -60,6 +70,12 @@ python examples/demo_validation.py
 python examples/demo_validation.py
 python examples/demo_portability.py
 python examples/demo_migration_check.py
+
+# Cross-platform offboarding validation (zero credentials)
+python examples/demo_offboarding_validation.py
+
+# Four-platform portability demo (simulation mode)
+python examples/demo_four_platform_portability.py
 ```
 
 ## Adding your own adapter
@@ -69,6 +85,8 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 ## Related articles
 
 - Medium (forthcoming): *Vendor-neutral semantics between Foundry, Fabric IQ, and MCP* — link TBD.
+- ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War
+  [MEDIUM ARTICLE LINK — add when published]
 
 ---
 

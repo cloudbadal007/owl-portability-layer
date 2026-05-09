@@ -1,0 +1,146 @@
+@prefix off: <http://enterprise.org/offboarding#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+off: a owl:Ontology ;
+    rdfs:label "Cross-platform Employee Offboarding Ontology" ;
+    rdfs:comment "Combined OWL ontology and SHACL guards for employee offboarding portability." .
+
+off:EmployeeOffboarding a owl:Class ;
+    rdfs:label "Employee Offboarding" ;
+    rdfs:comment "Complete offboarding requires all domains to resolve and certify completion." .
+
+off:OffboardingDomain a owl:Class ;
+    rdfs:label "Offboarding Domain" ;
+    rdfs:comment "Abstract parent domain for offboarding responsibilities." .
+
+off:HRDomain a owl:Class ;
+    rdfs:subClassOf off:OffboardingDomain ;
+    rdfs:label "HR Domain" ;
+    rdfs:comment "ServiceNow HR domain that manages human resources case closure." .
+
+off:ITDomain a owl:Class ;
+    rdfs:subClassOf off:OffboardingDomain ;
+    rdfs:label "IT Domain" ;
+    rdfs:comment "ServiceNow CMDB / IT domain that handles access and system dependencies." .
+
+off:FinanceDomain a owl:Class ;
+    rdfs:subClassOf off:OffboardingDomain ;
+    rdfs:label "Finance Domain" ;
+    rdfs:comment "Salesforce Finance domain that controls payroll and final payment processing." .
+
+off:hasHRStatus a owl:DatatypeProperty ;
+    rdfs:label "HR Status" ;
+    rdfs:comment "Status of HR offboarding flow." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:string .
+
+off:hasITStatus a owl:DatatypeProperty ;
+    rdfs:label "IT Status" ;
+    rdfs:comment "Status of IT offboarding flow." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:string .
+
+off:hasFinanceStatus a owl:DatatypeProperty ;
+    rdfs:label "Finance Status" ;
+    rdfs:comment "Status of Finance offboarding flow." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:string .
+
+off:activeDirectoryRevoked a owl:DatatypeProperty ;
+    rdfs:label "Active Directory Revoked" ;
+    rdfs:comment "Indicates whether Active Directory access is revoked." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:boolean .
+
+off:completionCertified a owl:DatatypeProperty ;
+    rdfs:label "Completion Certified" ;
+    rdfs:comment "Indicates whether completion was certified by workflow owners." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:boolean .
+
+off:employeeId a owl:DatatypeProperty ;
+    rdfs:label "Employee ID" ;
+    rdfs:comment "Unique identifier for the employee." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:string .
+
+off:terminationDate a owl:DatatypeProperty ;
+    rdfs:label "Termination Date" ;
+    rdfs:comment "Official termination date for legal and payroll compliance." ;
+    rdfs:domain off:EmployeeOffboarding ;
+    rdfs:range xsd:date .
+
+off:OffboardingCompletionShape a sh:NodeShape ;
+    sh:targetClass off:EmployeeOffboarding ;
+    sh:severity sh:Violation ;
+    sh:message "🚨 OFFBOARDING INCOMPLETE: Not all domains are resolved. Active Directory access must remain locked until all three domains confirm completion." ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:select """
+PREFIX off: <http://enterprise.org/offboarding#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT $this
+WHERE {
+  $this off:completionCertified ?certified .
+  FILTER(?certified = true || ?certified = "true"^^xsd:boolean)
+  OPTIONAL { $this off:hasHRStatus ?hr . }
+  OPTIONAL { $this off:hasITStatus ?it . }
+  OPTIONAL { $this off:hasFinanceStatus ?finance . }
+  OPTIONAL { $this off:activeDirectoryRevoked ?adRevoked . }
+  FILTER(
+    !BOUND(?hr) || lcase(str(?hr)) != "resolved" ||
+    !BOUND(?it) || lcase(str(?it)) != "resolved" ||
+    !BOUND(?finance) || lcase(str(?finance)) != "processed" ||
+    !BOUND(?adRevoked) || str(?adRevoked) != "true"
+  )
+}
+""" ;
+    ] .
+
+off:ADRevocationShape a sh:NodeShape ;
+    sh:targetClass off:EmployeeOffboarding ;
+    sh:severity sh:Violation ;
+    sh:message "🚨 SECURITY RISK: Active Directory revocation attempted while offboarding is incomplete. Action BLOCKED." ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:select """
+PREFIX off: <http://enterprise.org/offboarding#>
+SELECT $this
+WHERE {
+  $this off:activeDirectoryRevoked ?adRevoked .
+  $this off:hasITStatus ?it .
+  $this off:hasHRStatus ?hr .
+  FILTER(str(?adRevoked) = "false" && lcase(str(?it)) = "resolved" && lcase(str(?hr)) != "resolved")
+}
+""" ;
+    ] .
+
+off:FinanceSequenceShape a sh:NodeShape ;
+    sh:targetClass off:EmployeeOffboarding ;
+    sh:severity sh:Warning ;
+    sh:message "⚠️ SEQUENCE VIOLATION: Finance payment triggered before HR case resolved. Human review required." ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:select """
+PREFIX off: <http://enterprise.org/offboarding#>
+SELECT $this
+WHERE {
+  $this off:hasFinanceStatus ?finance .
+  $this off:hasHRStatus ?hr .
+  FILTER(lcase(str(?finance)) = "processed" && lcase(str(?hr)) != "resolved")
+}
+""" ;
+    ] .
+
+off:MissingTerminationDateShape a sh:NodeShape ;
+    sh:targetClass off:EmployeeOffboarding ;
+    sh:severity sh:Warning ;
+    sh:message "⚠️ AUDIT RISK: No termination date recorded. Required for legal and payroll compliance." ;
+    sh:property [
+        sh:path off:terminationDate ;
+        sh:minCount 1 ;
+    ] .
