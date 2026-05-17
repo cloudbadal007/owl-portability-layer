@@ -12,9 +12,16 @@ from uuid import uuid4
 
 import pyshacl
 from rdflib import Graph, Literal, Namespace, RDF
-from rdflib.namespace import XSD
+from rdflib.namespace import SH, XSD
+
+from owl_portability.utils.shacl_reporter import violations_from_report
 
 OFF = Namespace("http://enterprise.org/offboarding#")
+
+_AUDIT_RISK_TERMINATION_MSG = (
+    "⚠️ AUDIT RISK: No termination date recorded. "
+    "Required for legal and payroll compliance."
+)
 
 
 @dataclass
@@ -58,7 +65,7 @@ class CrossPlatformOffboardingValidator:
         data_graph = Graph()
         data_graph += self.ontology
         data_graph += event_graph
-        conforms, report_graph, report_text = pyshacl.validate(
+        _conforms, report_graph, report_text = pyshacl.validate(
             data_graph,
             shacl_graph=self.shacl_graph,
             ont_graph=self.ontology,
@@ -67,7 +74,15 @@ class CrossPlatformOffboardingValidator:
             allow_infos=True,
             allow_warnings=True,
         )
-        violations = self._extract_violations(report_text, report_graph.serialize(format="turtle"))
+        has_results = bool(
+            report_graph is not None
+            and any(report_graph.subjects(RDF.type, SH.ValidationResult))
+        )
+        violations = violations_from_report(
+            report_graph,
+            report_text if has_results else None,
+        )
+        violations = self._enrich_offboarding_violations(event, violations)
         if any("🚨" in message for message in violations):
             event.severity = "critical"
         elif any("⚠️" in message for message in violations):
@@ -75,7 +90,8 @@ class CrossPlatformOffboardingValidator:
         else:
             event.severity = "none"
         event.violations = violations
-        return bool(conforms), violations
+        effective_conforms = len(violations) == 0
+        return effective_conforms, violations
 
     def _build_event_rdf(self, event: OffboardingEvent) -> Graph:
         """Build RDF graph for an offboarding event.
@@ -156,24 +172,15 @@ class CrossPlatformOffboardingValidator:
         )
         return "\n".join(lines)
 
-    def _extract_violations(self, report_text: str, fallback_text: str) -> list[str]:
-        """Extract violation messages from SHACL report text.
-
-        Args:
-            report_text: Main textual pyshacl report.
-            fallback_text: Serialized report graph text for fallback scan.
-
-        Returns:
-            List of unique warning/critical messages.
-        """
-        violations: list[str] = []
-        for source_text in (report_text, fallback_text):
-            for line in source_text.splitlines():
-                candidate = line.strip()
-                if "🚨" in candidate or "⚠️" in candidate:
-                    violations.append(candidate)
-        deduped: list[str] = []
-        for violation in violations:
-            if violation not in deduped:
-                deduped.append(violation)
-        return deduped
+    def _enrich_offboarding_violations(
+        self,
+        event: OffboardingEvent,
+        violations: list[str],
+    ) -> list[str]:
+        """Add domain-friendly messages when pyshacl emits generic property text."""
+        if event.termination_date is None and not any(
+            "AUDIT RISK" in message for message in violations
+        ):
+            if any("terminationDate" in message for message in violations) or not violations:
+                violations = list(violations) + [_AUDIT_RISK_TERMINATION_MSG]
+        return violations

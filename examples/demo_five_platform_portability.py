@@ -1,4 +1,4 @@
-"""Four-platform portability demo with identical SHACL governance.
+"""Five-platform portability demo with identical SHACL governance.
 
 Part of the OntoArc enterprise ontology toolkit.
 """
@@ -16,6 +16,7 @@ if str(SRC) not in sys.path:
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
+from owl_portability.adapters.agentcore import AgentCoreSemanticAdapter  # noqa: E402
 from owl_portability.adapters.fabric_iq import FabricIQAdapter  # noqa: E402
 from owl_portability.adapters.google_knowledge_catalog import (  # noqa: E402
     GoogleKnowledgeCatalogAdapter,
@@ -29,6 +30,15 @@ def main() -> None:
     layer = OWLPortabilityLayer(
         ROOT / "ontologies" / "procurement.ttl",
         ROOT / "ontologies" / "procurement_shacl.ttl",
+    )
+    layer.register_adapter(
+        "agentcore",
+        AgentCoreSemanticAdapter(
+            ontology_path=str(ROOT / "ontologies" / "procurement.ttl"),
+            shacl_path=str(ROOT / "ontologies" / "procurement_shacl.ttl"),
+            agentcore_region="us-east-1",
+            simulation_mode=True,
+        ),
     )
     layer.register_adapter(
         "servicenow",
@@ -58,22 +68,23 @@ def main() -> None:
     )
 
     targets = [
+        ("AgentCore", "agentcore"),
         ("ServiceNow", "servicenow"),
         ("Google", "google"),
         ("Microsoft", "microsoft"),
         ("Palantir", "palantir"),
     ]
 
-    print("=== Test 1: Valid PaymentEvent across four platforms ===")
-    valid_payload = {"paymentId": "PAY-4P-100", "amountUSD": 25000}
+    print("=== Test 1: Valid PaymentEvent across five platforms ===")
+    valid_payload = {"paymentId": "PAY-5P-100", "amountUSD": 25000}
     for platform_name, key in targets:
         result = layer.validate_and_route(valid_payload, "PaymentEvent", target_platform=key)
         status = "✅" if result.passed else "🚨"
         print(f"{platform_name}: {status}")
 
-    print("\n=== Test 2: ComplianceHold without approver blocked on all four ===")
+    print("\n=== Test 2: ComplianceHold without approver blocked on all five ===")
     blocked_payload = {
-        "paymentId": "PAY-4P-HOLD",
+        "paymentId": "PAY-5P-HOLD",
         "amountUSD": 150000,
         "hasHoldStatus": {"@type": "ComplianceHold"},
     }
@@ -83,9 +94,10 @@ def main() -> None:
         print(f"{platform_name}: {status}")
 
     print(
-        "\nThe SHACL constraint is identical across all four platforms.\n"
+        "\nFive platforms. One OWL/SHACL constraint layer.\n"
+        "The SHACL constraint is identical across all five.\n"
         "Change target_platform. The governance never changes.\n"
-        "Platforms: ServiceNow | Google | Microsoft | Palantir"
+        "\nPlatforms: AgentCore | ServiceNow | Google | Microsoft | Palantir"
     )
 
 

@@ -48,15 +48,36 @@ python examples/demo_validation.py
 
 ## Platform Adapters
 
-| Platform | Adapter | Status |
-|---|---|---|
-| Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live |
-| Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live |
-| Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live |
-| ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live |
+| Platform | Adapter | Status | Policy Model |
+|---|---|---|---|
+| Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live | Proprietary OSDK |
+| Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live | Semantic contracts |
+| Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live | schema.org + RDF |
+| ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live | CMDB Knowledge Graph |
+| AWS AgentCore | `AgentCoreSemanticAdapter` | ✅ Live | Cedar + OWL/SHACL |
 
 All adapters work in simulation mode — zero platform credentials
 needed to run the demos.
+
+## Cedar + OWL/SHACL: Two Complementary Layers
+
+AWS AgentCore ships Cedar for access control governance. The
+`AgentCoreSemanticAdapter` adds the OWL/SHACL domain constraint
+layer that Cedar cannot express.
+
+| Question | Cedar (AgentCore Gateway) | OWL/SHACL (This Layer) |
+|---|---|---|
+| Is this principal permitted to call this tool? | ✅ | — |
+| Does this call violate domain business rules? | — | ✅ |
+| Does this work cross-platform? | Gateway only | ✅ All platforms |
+
+```bash
+# Cedar + OWL/SHACL parallel governance demo (zero credentials)
+python examples/demo_agentcore_parallel_governance.py
+
+# Five-platform portability demo (simulation mode)
+python examples/demo_five_platform_portability.py
+```
 
 ## Cross-Platform Validators
 
@@ -78,6 +99,8 @@ python examples/demo_offboarding_validation.py
 python examples/demo_four_platform_portability.py
 ```
 
+AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
+
 ## Adding your own adapter
 
 See [docs/adding_adapters.md](docs/adding_adapters.md).
@@ -86,6 +109,9 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 
 - Medium (forthcoming): *Vendor-neutral semantics between Foundry, Fabric IQ, and MCP* — link TBD.
 - ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War
+  [MEDIUM ARTICLE LINK — add when published]
+- AWS Built AgentCore With 6 Enterprise Layers. The Semantic
+  Authority Layer Isn't One of Them
   [MEDIUM ARTICLE LINK — add when published]
 
 ---
