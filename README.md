@@ -48,16 +48,29 @@ python examples/demo_validation.py
 
 ## Platform Adapters
 
-| Platform | Adapter | Status | Policy Model |
+| Platform | Adapter | Status | Semantic Model |
 |---|---|---|---|
 | Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live | Proprietary OSDK |
 | Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live | Semantic contracts |
+| Microsoft Dataverse | `DataverseSemanticAdapter` | ✅ Live | Vector index + Business Skills |
 | Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live | schema.org + RDF |
 | ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live | CMDB Knowledge Graph |
 | AWS AgentCore | `AgentCoreSemanticAdapter` | ✅ Live | Cedar + OWL/SHACL |
 
 All adapters work in simulation mode — zero platform credentials
 needed to run the demos.
+
+## Microsoft's Two Semantic Layers
+
+Microsoft offers two complementary semantic layers. The OWL Portability
+Layer includes adapters for both:
+
+| Layer | Adapter | Data Estate | Entry Barrier |
+|---|---|---|---|
+| Fabric IQ | `FabricIQAdapter` | OneLake / DirectLake | Requires Fabric migration |
+| Dataverse | `DataverseSemanticAdapter` | Dynamics 365, Power Apps, M365 | Already deployed at scale |
+
+See `docs/dataverse_vs_fabric_iq.md` for the full comparison.
 
 ## Cedar + OWL/SHACL: Two Complementary Layers
 
@@ -77,6 +90,12 @@ python examples/demo_agentcore_parallel_governance.py
 
 # Five-platform portability demo (simulation mode)
 python examples/demo_five_platform_portability.py
+
+# Dataverse + OWL/SHACL bridge demo (zero credentials)
+python examples/demo_dataverse_bridge.py
+
+# Six-platform portability demo (simulation mode)
+python examples/demo_six_platform_portability.py
 ```
 
 ## Cross-Platform Validators
@@ -97,6 +116,12 @@ python examples/demo_offboarding_validation.py
 
 # Four-platform portability demo (simulation mode)
 python examples/demo_four_platform_portability.py
+
+# Dataverse + OWL/SHACL bridge demo (zero credentials)
+python examples/demo_dataverse_bridge.py
+
+# Six-platform portability demo (simulation mode)
+python examples/demo_six_platform_portability.py
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
@@ -107,6 +132,9 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 
 ## Related articles
 
+- Microsoft Just Shipped Two Semantic Layers. One of Them Is
+  Quietly More Powerful Than Fabric IQ
+  [MEDIUM ARTICLE LINK — add when published]
 - Medium (forthcoming): *Vendor-neutral semantics between Foundry, Fabric IQ, and MCP* — link TBD.
 - ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War
   [MEDIUM ARTICLE LINK — add when published]
