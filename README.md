@@ -20,16 +20,18 @@ Enterprise ontology features are increasingly bundled into proprietary stacks—
                     ┌───────────────▼──────────────┐
                     │   OWL Portability Layer      │
                     │   OWL + SHACL (pyshacl/RDFS) │
-                    └───────┬──────────────┬───────┘
-                            │              │
-              ┌─────────────▼──┐    ┌──────▼──────────┐
-              │ Palantir       │    │ Microsoft       │
-              │ Foundry        │    │ Fabric IQ       │
-              └────────────────┘    └─────────────────┘
-                            │
-                    ┌───────▼────────┐
-                    │ MCP (JSON-RPC) │  ← vendor-free path
-                    └────────────────┘
+                    └───────────────┬──────────────┘
+                                    │
+     ┌──────────┬──────────┬────────┼────────┬──────────┬──────────┐
+     │          │          │        │        │          │          │
+┌────▼────┐ ┌───▼───┐ ┌────▼────┐ ┌─▼──────┐ ┌─▼───────┐ ┌───▼─────┐
+│Dataverse│ │Fabric │ │AgentCore│ │Service │ │ Google  │ │Palantir │
+│D365/M365│ │  IQ   │ │  (AWS)  │ │  Now   │ │ Catalog │ │ Foundry │
+└─────────┘ └───────┘ └─────────┘ └────────┘ └─────────┘ └─────────┘
+                                    │
+                           ┌────────▼────────┐
+                           │ MCP (JSON-RPC)  │  ← vendor-free path
+                           └─────────────────┘
 ```
 
 ## Quick start
