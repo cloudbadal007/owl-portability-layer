@@ -135,12 +135,9 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 - Microsoft Just Shipped Two Semantic Layers. One of Them Is
   Quietly More Powerful Than Fabric IQ
   [MEDIUM ARTICLE LINK — add when published]
-- Medium (forthcoming): *Vendor-neutral semantics between Foundry, Fabric IQ, and MCP* — link TBD.
-- ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War
-  [MEDIUM ARTICLE LINK — add when published]
-- AWS Built AgentCore With 6 Enterprise Layers. The Semantic
-  Authority Layer Isn't One of Them
-  [MEDIUM ARTICLE LINK — add when published]
+- [Google vs Microsoft vs Palantir: The Enterprise Ontology Race and the Layer All Three Are Missing](https://medium.com/@cloudpankaj/google-vs-microsoft-vs-palantir-the-enterprise-ontology-race-and-the-layer-all-three-are-missing-e965b2d635d9)
+- [ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War (and the OWL Layer None of Them Ship)](https://medium.com/@cloudpankaj/servicenow-vs-microsoft-vs-salesforce-the-semantic-layer-war-and-the-owl-layer-none-of-them-ship-d3c4b2eb4949)
+- [AWS Built AgentCore With 6 Enterprise Layers. The Semantic Authority Layer Isn't One of Them](https://medium.com/@cloudpankaj/aws-built-agentcore-with-6-enterprise-layers-the-semantic-authority-layer-isnt-one-of-them-72c9373388b9)
 
 ---
 
