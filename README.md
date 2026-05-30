@@ -13,25 +13,25 @@ Enterprise ontology features are increasingly bundled into proprietary stacks—
 ## Architecture
 
 ```
-                    ┌──────────────────────────────┐
-                    │  Agents (MCP / A2A / custom)  │
-                    └───────────────┬──────────────┘
-                                    │
-                    ┌───────────────▼──────────────┐
-                    │   OWL Portability Layer      │
-                    │   OWL + SHACL (pyshacl/RDFS) │
-                    └───────────────┬──────────────┘
-                                    │
-     ┌──────────┬──────────┬────────┼────────┬──────────┬──────────┐
-     │          │          │        │        │          │          │
-┌────▼────┐ ┌───▼───┐ ┌────▼────┐ ┌─▼──────┐ ┌─▼───────┐ ┌───▼─────┐
-│Dataverse│ │Fabric │ │AgentCore│ │Service │ │ Google  │ │Palantir │
-│D365/M365│ │  IQ   │ │  (AWS)  │ │  Now   │ │ Catalog │ │ Foundry │
-└─────────┘ └───────┘ └─────────┘ └────────┘ └─────────┘ └─────────┘
-                                    │
-                           ┌────────▼────────┐
-                           │ MCP (JSON-RPC)  │  ← vendor-free path
-                           └─────────────────┘
+                          ┌──────────────────────────────┐
+                          │  Agents (MCP / A2A / custom)  │
+                          └───────────────┬──────────────┘
+                                          │
+                          ┌───────────────▼──────────────┐
+                          │   OWL Portability Layer      │
+                          │   OWL + SHACL (pyshacl/RDFS) │
+                          └───────────────┬──────────────┘
+                                          │
+   ┌─────────┬─────────┬─────────┬────────┼────────┬─────────┬─────────┐
+   │         │         │         │        │        │         │         │
+┌──▼────┐ ┌──▼──────┐ ┌──▼────┐ ┌──▼──────┐ ┌──▼─────┐ ┌──▼────┐ ┌──▼─────┐
+│  IBM  │ │Dataverse│ │Fabric │ │AgentCore│ │Service │ │Google │ │Palantir│
+│watsonx│ │D365/M365│ │  IQ   │ │  (AWS)  │ │  Now   │ │Catalog│ │Foundry │
+└───────┘ └─────────┘ └───────┘ └─────────┘ └────────┘ └───────┘ └────────┘
+                                          │
+                                 ┌────────▼────────┐
+                                 │ MCP (JSON-RPC)  │  ← vendor-free path
+                                 └─────────────────┘
 ```
 
 ## Quick start
@@ -50,17 +50,30 @@ python examples/demo_validation.py
 
 ## Platform Adapters
 
-| Platform | Adapter | Status | Semantic Model |
+| Platform | Adapter | Status | Governance Model |
 |---|---|---|---|
 | Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live | Proprietary OSDK |
 | Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live | Semantic contracts |
-| Microsoft Dataverse | `DataverseSemanticAdapter` | ✅ Live | Vector index + Business Skills |
+| Microsoft Dataverse | `DataverseSemanticAdapter` | ✅ Live | Vector index + Skills |
 | Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live | schema.org + RDF |
 | ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live | CMDB Knowledge Graph |
 | AWS AgentCore | `AgentCoreSemanticAdapter` | ✅ Live | Cedar + OWL/SHACL |
+| IBM watsonx.data Context | `IBMWatsonxContextAdapter` | ✅ Live | Runtime governance + OWL/SHACL |
 
-All adapters work in simulation mode — zero platform credentials
-needed to run the demos.
+All adapters work in simulation mode — zero platform credentials needed.
+
+## IBM vs Google vs AWS: Three Approaches to the Semantic Layer
+
+| Dimension | Google Knowledge Catalog | AWS AgentCore | IBM watsonx.data |
+|---|---|---|---|
+| Governance model | Retrieval-first | Cedar (access control) | Runtime enforcement |
+| Cross-platform | ❌ | Gateway only | Federated ✅ |
+| Open standards | RDF/JSON-LD ✅ | Cedar (open source) ✅ | Claimed ✅ |
+| OWL support | ❌ | ❌ | ❌ |
+| SHACL support | ❌ | ❌ | ❌ |
+| Production status | GA | GA | Private preview |
+
+See `docs/ibm_vs_google_vs_aws.md` for full analysis.
 
 ## Microsoft's Two Semantic Layers
 
@@ -124,6 +137,12 @@ python examples/demo_dataverse_bridge.py
 
 # Six-platform portability demo (simulation mode)
 python examples/demo_six_platform_portability.py
+
+# IBM watsonx + OWL/SHACL governance demo (zero credentials)
+python examples/demo_ibm_watsonx_governance.py
+
+# Seven-platform portability demo (simulation mode)
+python examples/demo_seven_platform_portability.py
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
@@ -140,6 +159,9 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 - [Google vs Microsoft vs Palantir: The Enterprise Ontology Race and the Layer All Three Are Missing](https://medium.com/@cloudpankaj/google-vs-microsoft-vs-palantir-the-enterprise-ontology-race-and-the-layer-all-three-are-missing-e965b2d635d9)
 - [ServiceNow vs Microsoft vs Salesforce: The Semantic Layer War (and the OWL Layer None of Them Ship)](https://medium.com/@cloudpankaj/servicenow-vs-microsoft-vs-salesforce-the-semantic-layer-war-and-the-owl-layer-none-of-them-ship-d3c4b2eb4949)
 - [AWS Built AgentCore With 6 Enterprise Layers. The Semantic Authority Layer Isn't One of Them](https://medium.com/@cloudpankaj/aws-built-agentcore-with-6-enterprise-layers-the-semantic-authority-layer-isnt-one-of-them-72c9373388b9)
+- IBM watsonx vs Google Knowledge Catalog vs AWS AgentCore:
+  The Semantic Layer Race Just Got a New Contender — and a New Gap
+  [MEDIUM ARTICLE LINK — add when published]
 
 ---
 

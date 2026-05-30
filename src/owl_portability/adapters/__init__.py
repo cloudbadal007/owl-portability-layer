@@ -4,6 +4,11 @@ from owl_portability.adapters.agentcore import AgentCoreSemanticAdapter, AgentCo
 from owl_portability.adapters.base import BaseAdapter
 from owl_portability.adapters.fabric_iq import FabricIQAdapter
 from owl_portability.adapters.google_knowledge_catalog import GoogleKnowledgeCatalogAdapter
+from owl_portability.adapters.ibm_watsonx import (
+    IBMWatsonxContextAdapter,
+    WatsonxContextQuery,
+    WatsonxValidationResult,
+)
 from owl_portability.adapters.mcp_adapter import MCPAdapter
 from owl_portability.adapters.palantir import PalantirFoundryAdapter
 from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter
@@ -14,7 +19,10 @@ __all__ = [
     "BaseAdapter",
     "FabricIQAdapter",
     "GoogleKnowledgeCatalogAdapter",
+    "IBMWatsonxContextAdapter",
     "MCPAdapter",
     "PalantirFoundryAdapter",
     "ServiceNowContextEngineAdapter",
+    "WatsonxContextQuery",
+    "WatsonxValidationResult",
 ]
