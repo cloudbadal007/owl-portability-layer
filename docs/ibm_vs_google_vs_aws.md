@@ -192,3 +192,15 @@ print(result.passed)
 
 Google retrieves. Cedar authorizes. IBM federates. None of them proves.
 Build the proofs.
+
+## 10. Related: OpenAI Frontier vs Google vs Microsoft
+
+A parallel three-way comparison covers the **business accessibility** axis:
+
+- **OpenAI Frontier** — Business Context + "AI co-worker" governance (layers 1 and 2)
+- **Google Knowledge Catalog** — open-standards retrieval (RDF/JSON-LD)
+- **Microsoft Fabric IQ** — formal domain modelling inside DirectLake
+
+All three share the same gap: no OWL, no SHACL. See
+`docs/openai_frontier_vs_google_vs_microsoft.md` for the full analysis and
+`OpenAIFrontierAdapter` code example.

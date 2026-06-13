@@ -12,6 +12,7 @@ if str(SRC) not in sys.path:
 
 from owl_portability.adapters.fabric_iq import FabricIQAdapter  # noqa: E402
 from owl_portability.adapters.mcp_adapter import MCPAdapter, owl_class_to_tool_name  # noqa: E402
+from owl_portability.adapters.openai_frontier import OpenAIFrontierAdapter  # noqa: E402
 from owl_portability.adapters.palantir import PalantirFoundryAdapter  # noqa: E402
 
 
@@ -36,3 +37,14 @@ def test_mcp_tool_name_mapping() -> None:
 def test_mcp_write_simulation() -> None:
     a = MCPAdapter("https://invalid.local")
     assert a.write({"paymentId": "p"}, "PaymentEvent") is True
+
+
+def test_openai_frontier_write_simulation() -> None:
+    a = OpenAIFrontierAdapter(
+        ontology_path=str(ROOT / "ontologies" / "procurement.ttl"),
+        shacl_path=str(ROOT / "ontologies" / "procurement_shacl.ttl"),
+        simulation_mode=True,
+    )
+    assert a.write({"paymentId": "p"}, "PaymentEvent") is True
+    assert a.health_check() is True
+    assert a.platform_name == "openai_frontier"

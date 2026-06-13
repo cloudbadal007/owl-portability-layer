@@ -9,6 +9,11 @@ from owl_portability.adapters.ibm_watsonx import (
     WatsonxContextQuery,
     WatsonxValidationResult,
 )
+from owl_portability.adapters.openai_frontier import (
+    FrontierAgentAction,
+    FrontierValidationResult,
+    OpenAIFrontierAdapter,
+)
 from owl_portability.adapters.mcp_adapter import MCPAdapter
 from owl_portability.adapters.palantir import PalantirFoundryAdapter
 from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter
@@ -18,9 +23,12 @@ __all__ = [
     "AgentCoreToolCall",
     "BaseAdapter",
     "FabricIQAdapter",
+    "FrontierAgentAction",
+    "FrontierValidationResult",
     "GoogleKnowledgeCatalogAdapter",
     "IBMWatsonxContextAdapter",
     "MCPAdapter",
+    "OpenAIFrontierAdapter",
     "PalantirFoundryAdapter",
     "ServiceNowContextEngineAdapter",
     "WatsonxContextQuery",

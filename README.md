@@ -22,12 +22,12 @@ Enterprise ontology features are increasingly bundled into proprietary stacks—
                           │   OWL + SHACL (pyshacl/RDFS) │
                           └───────────────┬──────────────┘
                                           │
-   ┌─────────┬─────────┬─────────┬────────┼────────┬─────────┬─────────┐
-   │         │         │         │        │        │         │         │
-┌──▼────┐ ┌──▼──────┐ ┌──▼────┐ ┌──▼──────┐ ┌──▼─────┐ ┌──▼────┐ ┌──▼─────┐
-│  IBM  │ │Dataverse│ │Fabric │ │AgentCore│ │Service │ │Google │ │Palantir│
-│watsonx│ │D365/M365│ │  IQ   │ │  (AWS)  │ │  Now   │ │Catalog│ │Foundry │
-└───────┘ └─────────┘ └───────┘ └─────────┘ └────────┘ └───────┘ └────────┘
+   ┌──────────┬──────────┬──────────┬──────┼──────┬──────────┬──────────┬──────────┐
+   │          │          │          │      │      │          │          │          │
+┌──▼─────┐ ┌──▼──────┐ ┌──▼────┐ ┌──▼─────┐ ┌──▼───┐ ┌──▼────┐ ┌──▼─────┐ ┌──▼─────┐
+│ OpenAI │ │IBM      │ │Data-  │ │Agent-  │ │Serv- │ │Google  │ │Fabric  │ │Palantir│
+│Frontier│ │watsonx  │ │verse  │ │Core    │ │iceNow│ │Catalog │ │IQ      │ │Foundry │
+└────────┘ └─────────┘ └───────┘ └────────┘ └──────┘ └───────┘ └────────┘ └────────┘
                                           │
                                  ┌────────▼────────┐
                                  │ MCP (JSON-RPC)  │  ← vendor-free path
@@ -50,17 +50,49 @@ python examples/demo_validation.py
 
 ## Platform Adapters
 
-| Platform | Adapter | Status | Governance Model |
+| Platform | Adapter | Status | Semantic Model |
 |---|---|---|---|
+| OpenAI Frontier | `OpenAIFrontierAdapter` | ✅ Live | Business Context + OWL/SHACL |
 | Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live | Proprietary OSDK |
 | Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live | Semantic contracts |
-| Microsoft Dataverse | `DataverseSemanticAdapter` | ✅ Live | Vector index + Skills |
+| Microsoft Dataverse | `DataverseSemanticAdapter` | ✅ Live | Vector index + Business Skills |
 | Google Knowledge Catalog | `GoogleKnowledgeCatalogAdapter` | ✅ Live | schema.org + RDF |
 | ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live | CMDB Knowledge Graph |
 | AWS AgentCore | `AgentCoreSemanticAdapter` | ✅ Live | Cedar + OWL/SHACL |
 | IBM watsonx.data Context | `IBMWatsonxContextAdapter` | ✅ Live | Runtime governance + OWL/SHACL |
+| Salesforce Agentforce | *(coming soon)* | 🔜 | Einstein Trust Layer |
 
-All adapters work in simulation mode — zero platform credentials needed.
+All adapters work in simulation mode — zero credentials needed.
+
+## OpenAI Frontier + OWL/SHACL: Three-Layer Governance
+
+OpenAI Frontier ships Business Context and identity/permissions. The
+`OpenAIFrontierAdapter` adds the OWL/SHACL constraint proof layer that
+Frontier cannot express.
+
+| Layer | Question | OpenAI Frontier | OWL/SHACL (This Layer) |
+|---|---|---|---|
+| 1 — Business Context | What does this entity mean? | ✅ | — |
+| 2 — Identity + Permissions | Who can call which action? | ✅ | — |
+| 3 — Constraint Proof | Are formal domain rules satisfied? | — | ✅ |
+
+| Dimension | OpenAI Frontier | Google Knowledge Catalog | Microsoft Fabric IQ |
+|---|---|---|---|
+| Business accessibility | ✅ Best | Moderate | Moderate |
+| Open standards | Moderate | ✅ Best | Moderate |
+| OWL support | ❌ | ❌ | ❌ |
+| SHACL support | ❌ | ❌ | ❌ |
+| Production status | GA (pricing change July 6) | GA | GA |
+
+See `docs/openai_frontier_vs_google_vs_microsoft.md` for full analysis.
+
+```bash
+# OpenAI Frontier + OWL/SHACL three-layer governance demo (zero credentials)
+python examples/demo_frontier_governance.py
+
+# Nine-platform portability demo (simulation mode)
+python examples/demo_nine_platform_portability.py
+```
 
 ## IBM vs Google vs AWS: Three Approaches to the Semantic Layer
 
@@ -143,9 +175,41 @@ python examples/demo_ibm_watsonx_governance.py
 
 # Seven-platform portability demo (simulation mode)
 python examples/demo_seven_platform_portability.py
+
+# OpenAI Frontier + OWL/SHACL three-layer governance demo
+python examples/demo_frontier_governance.py
+
+# Nine-platform portability demo (simulation mode)
+python examples/demo_nine_platform_portability.py
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
+
+## Running tests
+
+All tests run offline in simulation mode — zero credentials required.
+
+```bash
+pip install -r requirements.txt
+
+# OpenAI Frontier adapter (16 tests)
+pytest tests/test_openai_frontier_adapter.py -v
+
+# Nine-platform portability integration (5 tests)
+pytest tests/test_nine_platform_portability.py -v
+
+# Full suite
+pytest tests/ -v
+```
+
+| Test module | Coverage |
+|---|---|
+| `test_openai_frontier_adapter.py` | Frontier denial, SHACL block, both pass, mapping, demo cases |
+| `test_nine_platform_portability.py` | Identical SHACL across 8 live platforms + Salesforce validate_only |
+| `test_adapters.py` | Simulation smoke tests including OpenAI Frontier |
+| `test_ibm_watsonx_adapter.py` | IBM runtime governance + SHACL |
+| `test_agentcore_adapter.py` | Cedar + SHACL |
+| `test_dataverse_adapter.py` | Dataverse grounding + SHACL |
 
 ## Adding your own adapter
 
@@ -162,6 +226,15 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
 - IBM watsonx vs Google Knowledge Catalog vs AWS AgentCore:
   The Semantic Layer Race Just Got a New Contender — and a New Gap
   [MEDIUM ARTICLE LINK — add when published]
+- OpenAI Frontier vs Google Knowledge Catalog vs Microsoft Fabric IQ:
+  The Semantic Layer Battle Just Got Its Biggest Contender
+  [MEDIUM ARTICLE LINK — add when published]
+
+See also:
+
+- `docs/openai_frontier_vs_google_vs_microsoft.md` — three-way semantic layer comparison
+- `docs/ibm_vs_google_vs_aws.md` — IBM vs Google vs AWS comparison
+- `docs/architecture.md` — nine-platform architecture and governance layers
 
 ---
 
