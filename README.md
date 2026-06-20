@@ -52,6 +52,7 @@ python examples/demo_validation.py
 
 | Platform | Adapter | Status | Semantic Model |
 |---|---|---|---|
+| Grok on Databricks | `GrokDatabricksAdapter` | ✅ Live | Genie Ontology + Unity AI Gateway |
 | OpenAI Frontier | `OpenAIFrontierAdapter` | ✅ Live | Business Context + OWL/SHACL |
 | Palantir Foundry | `PalantirFoundryAdapter` | ✅ Live | Proprietary OSDK |
 | Microsoft Fabric IQ | `FabricIQAdapter` | ✅ Live | Semantic contracts |
@@ -62,7 +63,10 @@ python examples/demo_validation.py
 | IBM watsonx.data Context | `IBMWatsonxContextAdapter` | ✅ Live | Runtime governance + OWL/SHACL |
 | Salesforce Agentforce | *(coming soon)* | 🔜 | Einstein Trust Layer |
 
-All adapters work in simulation mode — zero credentials needed.
+All adapters work in simulation mode — zero platform credentials needed.
+The Grok-on-Databricks adapter additionally demonstrates that the
+reasoning model (Grok, GPT, Claude) is orthogonal to the constraint
+enforcement layer — swap models freely, the governance stays constant.
 
 ## OpenAI Frontier + OWL/SHACL: Three-Layer Governance
 
@@ -181,6 +185,12 @@ python examples/demo_frontier_governance.py
 
 # Nine-platform portability demo (simulation mode)
 python examples/demo_nine_platform_portability.py
+
+# Grok-on-Databricks + OWL/SHACL governance demo (zero credentials)
+python examples/demo_grok_databricks_governance.py
+
+# Ten-platform portability demo (simulation mode)
+python examples/demo_ten_platform_portability.py
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
@@ -228,6 +238,9 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
   [MEDIUM ARTICLE LINK — add when published]
 - OpenAI Frontier vs Google Knowledge Catalog vs Microsoft Fabric IQ:
   The Semantic Layer Battle Just Got Its Biggest Contender
+  [MEDIUM ARTICLE LINK — add when published]
+- Elon Musk's Grok Just Landed on Databricks. The Semantic Layer Gap
+  I Found in February Is Still There.
   [MEDIUM ARTICLE LINK — add when published]
 
 See also:

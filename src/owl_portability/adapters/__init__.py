@@ -9,6 +9,11 @@ from owl_portability.adapters.ibm_watsonx import (
     WatsonxContextQuery,
     WatsonxValidationResult,
 )
+from owl_portability.adapters.grok_databricks import (
+    DatabricksAgentAction,
+    DatabricksValidationResult,
+    GrokDatabricksAdapter,
+)
 from owl_portability.adapters.openai_frontier import (
     FrontierAgentAction,
     FrontierValidationResult,
@@ -22,10 +27,13 @@ __all__ = [
     "AgentCoreSemanticAdapter",
     "AgentCoreToolCall",
     "BaseAdapter",
+    "DatabricksAgentAction",
+    "DatabricksValidationResult",
     "FabricIQAdapter",
     "FrontierAgentAction",
     "FrontierValidationResult",
     "GoogleKnowledgeCatalogAdapter",
+    "GrokDatabricksAdapter",
     "IBMWatsonxContextAdapter",
     "MCPAdapter",
     "OpenAIFrontierAdapter",
