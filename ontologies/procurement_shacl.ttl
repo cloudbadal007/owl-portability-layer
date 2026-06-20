@@ -1,0 +1,71 @@
+@prefix proc: <http://enterprise.org/procurement#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# ComplianceHold: approver required on the hold node
+#################################################################
+
+proc:ComplianceHoldShape a sh:NodeShape ;
+    sh:targetClass proc:ComplianceHold ;
+    sh:property [
+        sh:path proc:holdApprovedBy ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Compliance holds must record who approved the hold for release (holdApprovedBy is required)."@en
+    ] .
+
+#################################################################
+# PaymentEvent: paymentId required
+#################################################################
+
+proc:PaymentEventShape a sh:NodeShape ;
+    sh:targetClass proc:PaymentEvent ;
+    sh:property [
+        sh:path proc:paymentId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Every payment event must have a paymentId (string)."@en
+    ] .
+
+#################################################################
+# High-value payment: amount > 100000 USD with an active hold needs approver on the payment
+#################################################################
+
+proc:HighValuePaymentShape a sh:NodeShape ;
+    sh:targetClass proc:PaymentEvent ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Payments over $100,000 USD that have an active hold must record holdApprovedBy on the payment event."@en ;
+        sh:select """
+            SELECT ?this WHERE {
+                ?this proc:amountUSD ?amt .
+                FILTER(?amt > 100000)
+                ?this proc:hasHoldStatus ?hold .
+                FILTER NOT EXISTS { ?this proc:holdApprovedBy ?ap }
+            }
+        """
+    ] .
+
+#################################################################
+# High-value contract: contractValue > 500000 requires dual approval flag true
+#################################################################
+
+proc:HighValueContractShape a sh:NodeShape ;
+    sh:targetClass proc:Contract ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Contracts valued over $500,000 USD must have dualApprovalComplete set to true."@en ;
+        sh:select """
+            SELECT ?this WHERE {
+                ?this proc:contractValue ?cv .
+                FILTER(?cv > 500000)
+                FILTER NOT EXISTS {
+                    ?this proc:dualApprovalComplete ?da .
+                    FILTER(?da = true)
+                }
+            }
+        """
+    ] .

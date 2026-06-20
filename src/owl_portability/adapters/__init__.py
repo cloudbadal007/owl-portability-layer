@@ -1,0 +1,44 @@
+"""Platform adapters: Palantir Foundry, Microsoft Fabric IQ, AWS AgentCore, and MCP."""
+
+from owl_portability.adapters.agentcore import AgentCoreSemanticAdapter, AgentCoreToolCall
+from owl_portability.adapters.base import BaseAdapter
+from owl_portability.adapters.fabric_iq import FabricIQAdapter
+from owl_portability.adapters.google_knowledge_catalog import GoogleKnowledgeCatalogAdapter
+from owl_portability.adapters.ibm_watsonx import (
+    IBMWatsonxContextAdapter,
+    WatsonxContextQuery,
+    WatsonxValidationResult,
+)
+from owl_portability.adapters.grok_databricks import (
+    DatabricksAgentAction,
+    DatabricksValidationResult,
+    GrokDatabricksAdapter,
+)
+from owl_portability.adapters.openai_frontier import (
+    FrontierAgentAction,
+    FrontierValidationResult,
+    OpenAIFrontierAdapter,
+)
+from owl_portability.adapters.mcp_adapter import MCPAdapter
+from owl_portability.adapters.palantir import PalantirFoundryAdapter
+from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter
+
+__all__ = [
+    "AgentCoreSemanticAdapter",
+    "AgentCoreToolCall",
+    "BaseAdapter",
+    "DatabricksAgentAction",
+    "DatabricksValidationResult",
+    "FabricIQAdapter",
+    "FrontierAgentAction",
+    "FrontierValidationResult",
+    "GoogleKnowledgeCatalogAdapter",
+    "GrokDatabricksAdapter",
+    "IBMWatsonxContextAdapter",
+    "MCPAdapter",
+    "OpenAIFrontierAdapter",
+    "PalantirFoundryAdapter",
+    "ServiceNowContextEngineAdapter",
+    "WatsonxContextQuery",
+    "WatsonxValidationResult",
+]

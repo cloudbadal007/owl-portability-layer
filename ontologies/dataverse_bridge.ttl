@@ -1,0 +1,81 @@
+@prefix dv: <http://enterprise.org/dataverse#> .
+@prefix proc: <http://enterprise.org/procurement#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Bridge between Microsoft Dataverse schema vocabulary and the OWL procurement
+# type hierarchy. Dataverse agents resolve business meaning through the semantic
+# layer; this file declares formal equivalences so OWL/SHACL constraints apply
+# uniformly across Dataverse entity and field names.
+
+#################################################################
+# Custom Dataverse entity → OWL class mappings
+#################################################################
+
+dv:cr9a1_paymentevent a owl:Class ;
+    rdfs:label "Dataverse payment event entity"@en ;
+    rdfs:comment "Custom Dataverse table for outbound payment events; equivalent to proc:PaymentEvent."@en ;
+    owl:equivalentClass proc:PaymentEvent .
+
+dv:cr9a1_compliancehold a owl:Class ;
+    rdfs:label "Dataverse compliance hold entity"@en ;
+    rdfs:comment "Custom Dataverse table for regulatory compliance holds; equivalent to proc:ComplianceHold."@en ;
+    owl:equivalentClass proc:ComplianceHold .
+
+dv:cr9a1_budgethold a owl:Class ;
+    rdfs:label "Dataverse budget hold entity"@en ;
+    rdfs:comment "Custom Dataverse table for budget allocation holds; equivalent to proc:BudgetHold."@en ;
+    owl:equivalentClass proc:BudgetHold .
+
+dv:cr9a1_contract a owl:Class ;
+    rdfs:label "Dataverse contract entity"@en ;
+    rdfs:comment "Custom Dataverse table for vendor contracts; equivalent to proc:Contract."@en ;
+    owl:equivalentClass proc:Contract .
+
+dv:cr9a1_vendor a owl:Class ;
+    rdfs:label "Dataverse vendor entity"@en ;
+    rdfs:comment "Custom Dataverse table for supplier records; equivalent to proc:Vendor."@en ;
+    owl:equivalentClass proc:Vendor .
+
+#################################################################
+# Standard Dynamics 365 entity → OWL class mappings
+#################################################################
+
+dv:account a owl:Class ;
+    rdfs:label "Dynamics 365 account entity"@en ;
+    rdfs:comment "Standard Dynamics 365 account table; mapped to proc:Vendor for procurement semantics."@en ;
+    owl:equivalentClass proc:Vendor .
+
+dv:opportunity a owl:Class ;
+    rdfs:label "Dynamics 365 opportunity entity"@en ;
+    rdfs:comment "Standard Dynamics 365 opportunity table; mapped to proc:Contract for procurement semantics."@en ;
+    owl:equivalentClass proc:Contract .
+
+dv:invoice a owl:Class ;
+    rdfs:label "Dynamics 365 invoice entity"@en ;
+    rdfs:comment "Standard Dynamics 365 invoice table; mapped to proc:PaymentEvent for payment semantics."@en ;
+    owl:equivalentClass proc:PaymentEvent .
+
+#################################################################
+# Dataverse field → OWL property mappings
+#################################################################
+
+dv:cr9a1_amountusd a owl:DatatypeProperty ;
+    rdfs:label "Dataverse amount USD field"@en ;
+    rdfs:comment "Custom Dataverse currency field; equivalent to proc:amountUSD."@en ;
+    owl:equivalentProperty proc:amountUSD .
+
+dv:cr9a1_approvedby a owl:DatatypeProperty ;
+    rdfs:label "Dataverse hold approver field"@en ;
+    rdfs:comment "Custom Dataverse approver identity field; equivalent to proc:holdApprovedBy."@en ;
+    owl:equivalentProperty proc:holdApprovedBy .
+
+dv:cr9a1_paymentid a owl:DatatypeProperty ;
+    rdfs:label "Dataverse payment identifier field"@en ;
+    rdfs:comment "Custom Dataverse payment business key; equivalent to proc:paymentId."@en ;
+    owl:equivalentProperty proc:paymentId .
+
+dv:totalamount a owl:DatatypeProperty ;
+    rdfs:label "Dynamics 365 total amount field"@en ;
+    rdfs:comment "Standard Dynamics 365 total amount column; equivalent to proc:amountUSD."@en ;
+    owl:equivalentProperty proc:amountUSD .
