@@ -22,6 +22,7 @@ from owl_portability.adapters.fabric_iq import FabricIQAdapter  # noqa: E402
 from owl_portability.adapters.google_knowledge_catalog import (  # noqa: E402
     GoogleKnowledgeCatalogAdapter,
 )
+from owl_portability.adapters.grok_databricks import GrokDatabricksAdapter  # noqa: E402
 from owl_portability.adapters.ibm_watsonx import IBMWatsonxContextAdapter  # noqa: E402
 from owl_portability.adapters.openai_frontier import OpenAIFrontierAdapter  # noqa: E402
 from owl_portability.adapters.palantir import PalantirFoundryAdapter  # noqa: E402
@@ -35,6 +36,16 @@ def main() -> None:
 
     layer = OWLPortabilityLayer(onto, shacl)
 
+    layer.register_adapter(
+        "grok_databricks",
+        GrokDatabricksAdapter(
+            ontology_path=onto,
+            shacl_path=shacl,
+            databricks_workspace_url="",
+            databricks_token="",
+            simulation_mode=True,
+        ),
+    )
     layer.register_adapter(
         "openai_frontier",
         OpenAIFrontierAdapter(
@@ -100,6 +111,7 @@ def main() -> None:
     )
 
     targets = [
+        ("Grok-on-Databricks", "grok_databricks"),
         ("OpenAI Frontier", "openai_frontier"),
         ("IBM watsonx", "ibm_watsonx"),
         ("Dataverse", "dataverse"),
@@ -108,16 +120,12 @@ def main() -> None:
         ("Google", "google"),
         ("Fabric IQ", "microsoft"),
         ("Palantir", "palantir"),
-        ("Salesforce", "salesforce"),
     ]
 
     print("=== Test 1: Valid PaymentEvent across nine platforms ===")
     valid_payload = {"paymentId": "PAY-9P-100", "amountUSD": 25000}
     for platform_name, key in targets:
-        if key == "salesforce":
-            result = layer.validate_only(valid_payload, "PaymentEvent")
-        else:
-            result = layer.validate_and_route(valid_payload, "PaymentEvent", target_platform=key)
+        result = layer.validate_and_route(valid_payload, "PaymentEvent", target_platform=key)
         status = "✅" if result.passed else "🚨"
         print(f"{platform_name}: {status}")
 
@@ -128,12 +136,9 @@ def main() -> None:
         "hasHoldStatus": {"@type": "ComplianceHold"},
     }
     for platform_name, key in targets:
-        if key == "salesforce":
-            result = layer.validate_only(blocked_payload, "PaymentEvent")
-        else:
-            result = layer.validate_and_route(
-                blocked_payload, "PaymentEvent", target_platform=key
-            )
+        result = layer.validate_and_route(
+            blocked_payload, "PaymentEvent", target_platform=key
+        )
         status = "✅" if result.passed else "🚨"
         print(f"{platform_name}: {status}")
 
@@ -141,8 +146,9 @@ def main() -> None:
         "\nNine platforms. One OWL/SHACL constraint layer.\n"
         "The SHACL constraint is identical across all nine.\n"
         "Change target_platform. The governance never changes.\n"
-        "\nPlatforms: OpenAI Frontier | IBM watsonx | Dataverse | AgentCore\n"
-        "           ServiceNow | Google | Fabric IQ | Palantir | Salesforce"
+        "\nPlatforms: Grok-on-Databricks | OpenAI Frontier | IBM watsonx\n"
+        "           Dataverse | AgentCore | ServiceNow | Google\n"
+        "           Fabric IQ | Palantir"
     )
 
 

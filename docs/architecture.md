@@ -12,30 +12,32 @@
 │  • Load OWL + SHACL (rdflib)                                    │
 │  • validate_only / validate_and_route                           │
 │  • pyshacl + RDFS inference                                     │
-└────────────┬───────────────────────────────┬────────────────────┘
-             │                               │
-    ┌────────▼────────┐             ┌────────▼────────┐
-    │  OpenAI         │             │  IBM watsonx    │
-    │  Frontier       │             │  Context        │
-    │  (Business      │             │  (runtime       │
-    │   Context)      │             │   governance)   │
-    └────────┬────────┘             └────────┬────────┘
-             │                               │
-    ┌────────▼────────┐             ┌────────▼────────┐
-    │  Palantir       │             │  Fabric IQ      │
-    │  Foundry        │             │  (DirectLake /  │
-    │  (OSDK-shaped)  │             │   IQ REST)      │
-    └─────────────────┘             └─────────────────┘
+└────────────┬────────────────────────────────────────────────────┘
              │
-    ┌────────▼────────┐
-    │  MCPAdapter     │  ← vendor-free JSON-RPC to any MCP server
-    └─────────────────┘
+   ┌─────────┼─────────┬─────────┬─────────┬─────────┐
+   │         │         │         │         │         │
+┌──▼──┐  ┌───▼───┐ ┌───▼───┐ ┌───▼───┐ ┌───▼───┐ ┌───▼───┐
+│Grok │  │OpenAI │ │ IBM   │ │Data-  │ │Agent  │ │Service│
+│on DB│  │Front. │ │watsonx│ │verse  │ │Core   │ │  Now  │
+│Genie│  │Bus.   │ │runtime│ │Skills │ │Cedar  │ │CMDB   │
+│+UAI │  │Context│ │gov.   │ │+vec.  │ │+OWL   │ │graph  │
+└─────┘  └───────┘ └───────┘ └───────┘ └───────┘ └───────┘
+   ┌─────────┬─────────┬─────────┬─────────┐
+   │         │         │         │         │
+┌──▼────┐ ┌──▼────┐ ┌──▼────┐ ┌──▼────┐
+│Google │ │Fabric │ │Palantir│ │  MCP  │
+│Catalog│ │  IQ   │ │Foundry │ │Adapter│
+│schema │ │Direct │ │  OSDK  │ │JSON-  │
+│.org   │ │ Lake  │ │        │ │ RPC   │
+└───────┘ └───────┘ └────────┘ └───────┘
 ```
 
-Nine platform adapters are registered today (eight live, Salesforce coming soon).
-Each adapter runs the **same** SHACL shapes from `ontologies/procurement_shacl.ttl`.
-Platform-specific governance (Frontier Business Context, Cedar, IBM runtime policy)
-runs in the adapter layer; formal constraint proof runs in OWL/SHACL.
+Nine platform adapters are registered today. Each adapter runs the **same**
+SHACL shapes from `ontologies/procurement_shacl.ttl`. Platform-specific
+governance (Genie Ontology + Unity AI Gateway, Frontier Business Context,
+Cedar, IBM runtime policy) runs in the adapter layer; formal constraint proof
+runs in OWL/SHACL. `MCPAdapter` provides a vendor-free JSON-RPC path alongside
+the nine vendor adapters.
 
 ## Data flow
 
@@ -50,18 +52,23 @@ Some adapters implement **two-layer** governance (platform policy + OWL/SHACL):
 
 | Adapter | Layer 1 (platform) | Layer 2 (OWL/SHACL) |
 |---|---|---|
+| `GrokDatabricksAdapter` | Genie Ontology + Unity AI Gateway | SHACL constraint proof |
 | `OpenAIFrontierAdapter` | Frontier Business Context + permissions | SHACL constraint proof |
 | `AgentCoreSemanticAdapter` | Cedar (Gateway access control) | SHACL constraint proof |
 | `IBMWatsonxContextAdapter` | watsonx runtime governance | SHACL constraint proof |
 | `DataverseSemanticAdapter` | Dataverse semantic grounding | SHACL constraint proof |
 
-OpenAI Frontier is the reference **three-layer** model:
+OpenAI Frontier and Grok-on-Databricks are reference **three-layer** models:
 
-1. **Business Context** — what does this entity mean?
-2. **Identity + Permissions** — who can call which action?
+1. **Semantic context** — what does this entity mean? (Business Context / Genie Ontology)
+2. **Access control** — who can call which action? (Frontier permissions / Unity AI Gateway)
 3. **OWL/SHACL** — are formal domain constraints satisfied? (this layer)
 
-See `docs/openai_frontier_vs_google_vs_microsoft.md` for the three-way comparison.
+On Grok-on-Databricks, the reasoning model (Grok, GPT, Claude on Agent Bricks) is
+orthogonal to layers 1–3 — it is audit metadata, not a governance layer.
+
+See `docs/openai_frontier_vs_google_vs_microsoft.md` and
+`docs/grok_databricks_naming_convergence.md` for platform comparisons.
 
 ## Why OWL + SHACL in the middle
 
@@ -72,6 +79,7 @@ See `docs/openai_frontier_vs_google_vs_microsoft.md` for the three-way compariso
 ## Testing
 
 ```bash
+pytest tests/test_grok_databricks_adapter.py -v
 pytest tests/test_openai_frontier_adapter.py -v
 pytest tests/test_nine_platform_portability.py -v
 pytest tests/

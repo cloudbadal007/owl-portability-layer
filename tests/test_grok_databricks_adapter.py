@@ -110,7 +110,7 @@ def test_genie_to_owl_mapping() -> None:
 def test_safe_to_execute_requires_both_layers() -> None:
     """AND logic: both Unity AI Gateway permission AND OWL/SHACL must pass.
 
-    Consistent across all ten platform adapters.
+    Consistent across all nine platform adapters.
     """
     gateway_invalid = DatabricksValidationResult(
         action_id="r1",
@@ -173,10 +173,10 @@ def test_platform_name(adapter: GrokDatabricksAdapter) -> None:
     assert adapter.platform_name == "grok_databricks"
 
 
-def test_ten_platform_demo_imports() -> None:
-    """Integration test: all ten platform adapters instantiate without conflicts.
+def test_nine_platform_demo_imports() -> None:
+    """Integration test: all nine platform adapters instantiate without conflicts.
 
-    Ten platforms, one constraint layer, zero import errors.
+    Nine platforms, one constraint layer, zero import errors.
     """
     from owl_portability.adapters.agentcore import AgentCoreSemanticAdapter
     from owl_portability.adapters.dataverse import DataverseSemanticAdapter

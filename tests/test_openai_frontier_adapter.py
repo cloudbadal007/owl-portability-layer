@@ -280,7 +280,6 @@ def test_nine_platform_demo_imports() -> None:
     """Integration test: all nine platform adapters instantiate without conflicts.
 
     Nine platforms, one constraint layer, zero import errors.
-    Eight live adapters plus Salesforce (validate_only until adapter ships).
     """
     from owl_portability.adapters.agentcore import AgentCoreSemanticAdapter
     from owl_portability.adapters.dataverse import DataverseSemanticAdapter
@@ -288,6 +287,7 @@ def test_nine_platform_demo_imports() -> None:
     from owl_portability.adapters.google_knowledge_catalog import (
         GoogleKnowledgeCatalogAdapter,
     )
+    from owl_portability.adapters.grok_databricks import GrokDatabricksAdapter
     from owl_portability.adapters.ibm_watsonx import IBMWatsonxContextAdapter
     from owl_portability.adapters.palantir import PalantirFoundryAdapter
     from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter
@@ -296,6 +296,11 @@ def test_nine_platform_demo_imports() -> None:
     shacl = str(ROOT / "ontologies" / "procurement_shacl.ttl")
 
     simulation_adapters = [
+        GrokDatabricksAdapter(
+            ontology_path=onto,
+            shacl_path=shacl,
+            simulation_mode=True,
+        ),
         OpenAIFrontierAdapter(
             ontology_path=onto,
             shacl_path=shacl,
@@ -327,7 +332,7 @@ def test_nine_platform_demo_imports() -> None:
     ]
 
     all_adapters = simulation_adapters + http_only_adapters
-    assert len(all_adapters) == 8
+    assert len(all_adapters) == 9
     assert all(a.platform_name for a in all_adapters)
     assert all(a.health_check() is True for a in simulation_adapters)
 

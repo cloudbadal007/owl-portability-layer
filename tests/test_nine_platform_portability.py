@@ -1,7 +1,6 @@
 """Nine-platform portability integration tests.
 
-Verifies identical SHACL governance across all registered adapters.
-Salesforce uses validate_only until the Agentforce adapter ships.
+Verifies identical SHACL governance across all nine registered adapters.
 
 Part of the enterprise ontology governance stack.
 """
@@ -24,6 +23,7 @@ from owl_portability.adapters.fabric_iq import FabricIQAdapter  # noqa: E402
 from owl_portability.adapters.google_knowledge_catalog import (  # noqa: E402
     GoogleKnowledgeCatalogAdapter,
 )
+from owl_portability.adapters.grok_databricks import GrokDatabricksAdapter  # noqa: E402
 from owl_portability.adapters.ibm_watsonx import IBMWatsonxContextAdapter  # noqa: E402
 from owl_portability.adapters.openai_frontier import OpenAIFrontierAdapter  # noqa: E402
 from owl_portability.adapters.palantir import PalantirFoundryAdapter  # noqa: E402
@@ -31,6 +31,7 @@ from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter  
 from owl_portability.layer import OWLPortabilityLayer  # noqa: E402
 
 LIVE_PLATFORMS = [
+    "grok_databricks",
     "openai_frontier",
     "ibm_watsonx",
     "dataverse",
@@ -41,16 +42,22 @@ LIVE_PLATFORMS = [
     "palantir",
 ]
 
-ALL_NINE_PLATFORMS = LIVE_PLATFORMS + ["salesforce"]
-
 
 @pytest.fixture
 def nine_platform_layer() -> OWLPortabilityLayer:
-    """OWLPortabilityLayer with all eight live adapters registered."""
+    """OWLPortabilityLayer with all nine live adapters registered."""
     onto = str(ROOT / "ontologies" / "procurement.ttl")
     shacl = str(ROOT / "ontologies" / "procurement_shacl.ttl")
     layer = OWLPortabilityLayer(onto, shacl)
 
+    layer.register_adapter(
+        "grok_databricks",
+        GrokDatabricksAdapter(
+            ontology_path=onto,
+            shacl_path=shacl,
+            simulation_mode=True,
+        ),
+    )
     layer.register_adapter(
         "openai_frontier",
         OpenAIFrontierAdapter(
@@ -146,44 +153,22 @@ def test_compliance_hold_without_approver_blocked_all_live_platforms(
         assert result.passed is False, f"{platform} should block hold without approver"
 
 
-def test_salesforce_validate_only_same_shacl_constraint(
+def test_nine_platform_matrix_has_nine_live_adapters() -> None:
+    """Nine-platform matrix lists exactly nine routable adapter keys."""
+    assert len(LIVE_PLATFORMS) == 9
+    assert "grok_databricks" in LIVE_PLATFORMS
+    assert "openai_frontier" in LIVE_PLATFORMS
+    assert "palantir" in LIVE_PLATFORMS
+
+
+def test_grok_databricks_is_registered_platform(
     nine_platform_layer: OWLPortabilityLayer,
 ) -> None:
-    """Salesforce (adapter coming soon) still runs the same SHACL constraint.
-
-    validate_only proves governance is platform-independent even without an adapter.
-    """
-    valid = nine_platform_layer.validate_only(
-        {"paymentId": "PAY-SF-1", "amountUSD": 25000},
-        "PaymentEvent",
-    )
-    blocked = nine_platform_layer.validate_only(
-        {
-            "paymentId": "PAY-SF-HOLD",
-            "amountUSD": 150000,
-            "hasHoldStatus": {"@type": "ComplianceHold"},
-        },
-        "PaymentEvent",
-    )
-    assert valid.passed is True
-    assert blocked.passed is False
-
-
-def test_nine_platform_matrix_includes_salesforce() -> None:
-    """Nine-platform matrix lists Salesforce even before its adapter ships."""
-    assert len(ALL_NINE_PLATFORMS) == 9
-    assert "salesforce" in ALL_NINE_PLATFORMS
-    assert "openai_frontier" in ALL_NINE_PLATFORMS
-
-
-def test_openai_frontier_is_first_registered_platform(
-    nine_platform_layer: OWLPortabilityLayer,
-) -> None:
-    """OpenAI Frontier adapter is registered and routable."""
+    """Grok-on-Databricks adapter is registered and routable."""
     result = nine_platform_layer.validate_and_route(
-        {"paymentId": "PAY-FR", "amountUSD": 1000},
+        {"paymentId": "PAY-GD", "amountUSD": 1000},
         "PaymentEvent",
-        target_platform="openai_frontier",
+        target_platform="grok_databricks",
     )
     assert result.passed is True
-    assert result.platform_target == "openai_frontier"
+    assert result.platform_target == "grok_databricks"

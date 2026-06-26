@@ -1,4 +1,4 @@
-# Ten Platforms, Ten Names, One Gap: The Semantic Layer Naming Convergence
+# Nine Platforms, Nine Names, One Gap: The Semantic Layer Naming Convergence
 
 ## Overview
 
@@ -19,11 +19,10 @@ The vocabulary differs. The ambition converges. The formal constraint proof laye
 | AWS | Cedar (policy, not semantic per se, but governs the same boundary) | `AgentCoreSemanticAdapter` |
 | Palantir | Ontology (the original, predates this wave) | `PalantirFoundryAdapter` |
 | ServiceNow | Context Engine | `ServiceNowContextEngineAdapter` |
-| Salesforce | Customer 360 / Einstein Trust Layer | *(coming soon)* |
 
-Ten platforms. Ten vendor names. One recurring pattern.
+Nine platforms. Nine vendor adapters. One recurring pattern.
 
-## What's common across all ten
+## What's common across all nine
 
 - **Context resolution** — mapping agent queries to business entities and relationships
 - **Business term mapping** — bridging natural language to structured data models
@@ -31,7 +30,7 @@ Ten platforms. Ten vendor names. One recurring pattern.
 
 These three capabilities appear under different names but solve the same class of problem: help agents understand and access enterprise data safely.
 
-## What's absent across all ten
+## What's absent across all nine
 
 - **Formal OWL class hierarchies** — machine-readable ontologies with explicit subclass relationships
 - **SHACL constraint validation** — provable enforcement of domain rules (approvals, thresholds, mandatory fields)
@@ -41,7 +40,7 @@ No platform in the matrix ships all three. Understanding an entity is not the sa
 
 ## Why this convergence matters
 
-Independent arrival at the same framing from ten different vendors is strong evidence the industry recognises the problem. Every major stack is building a semantic layer. Every major stack stops short of formal constraint proof.
+Independent arrival at the same framing from nine different vendors is strong evidence the industry recognises the problem. Every major stack is building a semantic layer. Every major stack stops short of formal constraint proof.
 
 The solution gap is the opportunity. Teams that own OWL/SHACL constraints today can plug them into any platform tomorrow — because the constraint layer is vendor-neutral by design.
 
@@ -88,4 +87,4 @@ result = layer.validate_and_route(
 )
 ```
 
-Ten platforms. One OWL/SHACL constraint layer. The governance never changes.
+Nine platforms. One OWL/SHACL constraint layer. The governance never changes.

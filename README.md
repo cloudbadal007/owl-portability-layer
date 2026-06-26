@@ -22,12 +22,18 @@ Enterprise ontology features are increasingly bundled into proprietary stacks—
                           │   OWL + SHACL (pyshacl/RDFS) │
                           └───────────────┬──────────────┘
                                           │
-   ┌──────────┬──────────┬──────────┬──────┼──────┬──────────┬──────────┬──────────┐
-   │          │          │          │      │      │          │          │          │
-┌──▼─────┐ ┌──▼──────┐ ┌──▼────┐ ┌──▼─────┐ ┌──▼───┐ ┌──▼────┐ ┌──▼─────┐ ┌──▼─────┐
-│ OpenAI │ │IBM      │ │Data-  │ │Agent-  │ │Serv- │ │Google  │ │Fabric  │ │Palantir│
-│Frontier│ │watsonx  │ │verse  │ │Core    │ │iceNow│ │Catalog │ │IQ      │ │Foundry │
-└────────┘ └─────────┘ └───────┘ └────────┘ └──────┘ └───────┘ └────────┘ └────────┘
+       ┌──────────┬──────────┬──────────┬──┼──┬──────────┐
+       │          │          │          │  │          │
+   ┌───▼───┐  ┌───▼───┐  ┌───▼───┐  ┌───▼──┐┌───▼───┐
+   │ Grok  │  │OpenAI │  │ IBM   │  │Data- ││Agent  │
+   │on DB  │  │Front. │  │watsonx│  │verse ││Core   │
+   └───────┘  └───────┘  └───────┘  └──────┘└───────┘
+       ┌──────────┬──────────┬──────────┬──────────┐
+       │          │          │          │          │
+   ┌───▼───┐  ┌───▼────┐ ┌───▼───┐  ┌───▼────┐
+   │Service│  │Google  │ │Fabric │  │Palantir│
+   │  Now  │  │Catalog │ │  IQ   │  │Foundry │
+   └───────┘  └────────┘ └───────┘  └────────┘
                                           │
                                  ┌────────▼────────┐
                                  │ MCP (JSON-RPC)  │  ← vendor-free path
@@ -61,9 +67,8 @@ python examples/demo_validation.py
 | ServiceNow Context Engine | `ServiceNowContextEngineAdapter` | ✅ Live | CMDB Knowledge Graph |
 | AWS AgentCore | `AgentCoreSemanticAdapter` | ✅ Live | Cedar + OWL/SHACL |
 | IBM watsonx.data Context | `IBMWatsonxContextAdapter` | ✅ Live | Runtime governance + OWL/SHACL |
-| Salesforce Agentforce | *(coming soon)* | 🔜 | Einstein Trust Layer |
 
-All adapters work in simulation mode — zero platform credentials needed.
+All nine adapters work in simulation mode — zero platform credentials needed.
 The Grok-on-Databricks adapter additionally demonstrates that the
 reasoning model (Grok, GPT, Claude) is orthogonal to the constraint
 enforcement layer — swap models freely, the governance stays constant.
@@ -188,9 +193,6 @@ python examples/demo_nine_platform_portability.py
 
 # Grok-on-Databricks + OWL/SHACL governance demo (zero credentials)
 python examples/demo_grok_databricks_governance.py
-
-# Ten-platform portability demo (simulation mode)
-python examples/demo_ten_platform_portability.py
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
@@ -205,7 +207,10 @@ pip install -r requirements.txt
 # OpenAI Frontier adapter (16 tests)
 pytest tests/test_openai_frontier_adapter.py -v
 
-# Nine-platform portability integration (5 tests)
+# Grok-on-Databricks adapter (10 tests)
+pytest tests/test_grok_databricks_adapter.py -v
+
+# Nine-platform portability integration (4 tests)
 pytest tests/test_nine_platform_portability.py -v
 
 # Full suite
@@ -214,8 +219,9 @@ pytest tests/ -v
 
 | Test module | Coverage |
 |---|---|
+| `test_grok_databricks_adapter.py` | Gateway denial, SHACL block, both pass, Genie mapping, reasoning-model independence |
 | `test_openai_frontier_adapter.py` | Frontier denial, SHACL block, both pass, mapping, demo cases |
-| `test_nine_platform_portability.py` | Identical SHACL across 8 live platforms + Salesforce validate_only |
+| `test_nine_platform_portability.py` | Identical SHACL across all nine registered adapters |
 | `test_adapters.py` | Simulation smoke tests including OpenAI Frontier |
 | `test_ibm_watsonx_adapter.py` | IBM runtime governance + SHACL |
 | `test_agentcore_adapter.py` | Cedar + SHACL |
@@ -247,6 +253,7 @@ See also:
 
 - `docs/openai_frontier_vs_google_vs_microsoft.md` — three-way semantic layer comparison
 - `docs/ibm_vs_google_vs_aws.md` — IBM vs Google vs AWS comparison
+- `docs/grok_databricks_naming_convergence.md` — nine-platform semantic layer naming convergence
 - `docs/architecture.md` — nine-platform architecture and governance layers
 
 ---

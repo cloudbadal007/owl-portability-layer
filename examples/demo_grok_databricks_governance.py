@@ -167,7 +167,7 @@ def main() -> None:
         "  Unity AI Gateway gives access control.\n"
         "  Neither gives formal constraint proof.\n"
         "\n"
-        "  Ten platforms now stress-tested.\n"
+        "  Nine platforms now stress-tested.\n"
         "  Every reasoning model inherits the same architectural gap\n"
         "  from whichever data platform it's plugged into.\n"
         "\n"

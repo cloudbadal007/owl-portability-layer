@@ -104,9 +104,9 @@ class DatabricksValidationResult:
 class GrokDatabricksAdapter(BaseAdapter):
     """Bridge Databricks Genie Ontology with OWL/SHACL constraint proofs.
 
-    Ten-Platform Matrix Position:
+    Nine-Platform Matrix Position:
 
-    Grok-on-Databricks vs the other nine platforms:
+    Grok-on-Databricks vs the other eight platforms:
 
       Genie Ontology:     auto-extracted business context (not formal OWL)
       Unity AI Gateway:   runtime access control (not formal constraint proof)
