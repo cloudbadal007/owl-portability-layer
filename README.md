@@ -40,6 +40,31 @@ Enterprise ontology features are increasingly bundled into proprietary stacks—
                                  └─────────────────┘
 ```
 
+### KYC extraction pipeline
+
+Companion adapter at `adapters/kyc_extraction/` builds compliance ontologies
+from enterprise source systems, then feeds the portability layer:
+
+```
+ Oracle DDL ─────┐
+ Confluence  ─────┼──► LLM extraction ──► Merge/dedupe ──► OWL/Turtle
+ Slack       ─────┤         │                                │
+ Salesforce  ─────┤    ASSUMPTION + SOURCE annotations       ▼
+ MongoDB     ─────┘                              OWL Portability Layer
+                                                         │
+                                              pyshacl + nine platform adapters
+```
+
+| Stage | Module | Output |
+|---|---|---|
+| DDL parse | `oracle_ddl_parser.py` | Table → OWL class candidates |
+| Policy chunk | `confluence_chunker.py` | Section → axiom candidates |
+| Slack filter | `slack_filter.py` | Conflict-filtered axiom candidates |
+| Merge | `merge_deduplicator.py` | Canonical vocabulary Turtle |
+| Validate | `validator.py` | OWL consistency + SHACL + review report |
+
+See `adapters/kyc_extraction/README.md` for the full pipeline.
+
 ## Quick start
 
 ```bash
@@ -193,6 +218,11 @@ python examples/demo_nine_platform_portability.py
 
 # Grok-on-Databricks + OWL/SHACL governance demo (zero credentials)
 python examples/demo_grok_databricks_governance.py
+
+# KYC extraction pipeline (see adapters/kyc_extraction/README.md)
+cd adapters/kyc_extraction
+pip install -r requirements.txt
+python validator.py --ontology kyc_sample.ttl --data sample_data.ttl
 ```
 
 AgentCore demos are listed under [Cedar + OWL/SHACL](#cedar--owlshacl-two-complementary-layers) above.
@@ -213,12 +243,16 @@ pytest tests/test_grok_databricks_adapter.py -v
 # Nine-platform portability integration (4 tests)
 pytest tests/test_nine_platform_portability.py -v
 
+# KYC extraction adapter (13 tests)
+pytest tests/test_kyc_extraction.py -v
+
 # Full suite
 pytest tests/ -v
 ```
 
 | Test module | Coverage |
 |---|---|
+| `test_kyc_extraction.py` | DDL parse, Confluence chunking, Slack filter, merge/dedupe, validator |
 | `test_grok_databricks_adapter.py` | Gateway denial, SHACL block, both pass, Genie mapping, reasoning-model independence |
 | `test_openai_frontier_adapter.py` | Frontier denial, SHACL block, both pass, mapping, demo cases |
 | `test_nine_platform_portability.py` | Identical SHACL across all nine registered adapters |
@@ -254,7 +288,8 @@ See also:
 - `docs/openai_frontier_vs_google_vs_microsoft.md` — three-way semantic layer comparison
 - `docs/ibm_vs_google_vs_aws.md` — IBM vs Google vs AWS comparison
 - `docs/grok_databricks_naming_convergence.md` — nine-platform semantic layer naming convergence
-- `docs/architecture.md` — nine-platform architecture and governance layers
+- `docs/architecture.md` — nine-platform architecture, KYC extraction pipeline, governance layers
+- `adapters/kyc_extraction/README.md` — KYC ontology extraction from five enterprise sources
 
 ---
 

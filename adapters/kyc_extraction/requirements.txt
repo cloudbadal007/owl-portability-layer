@@ -1,0 +1,10 @@
+sqlalchemy>=2.0
+owlready2>=0.46
+pyshacl>=0.25
+langchain>=0.2
+langchain-anthropic>=0.1
+atlassian-python-api>=3.41
+slack-sdk>=3.27
+simple-salesforce>=1.12
+rdflib>=7.0
+genson>=1.3

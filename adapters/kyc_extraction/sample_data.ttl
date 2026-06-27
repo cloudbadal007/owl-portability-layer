@@ -1,0 +1,8 @@
+@prefix kyc: <https://example-bank.com/ontology/kyc#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+kyc:sampleCustomer a kyc:Customer ;
+    kyc:hasRiskTier "LOW" .
+
+kyc:sampleReview a kyc:ReviewObligation ;
+    kyc:reviewIntervalMonths 12 .

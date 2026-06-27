@@ -70,6 +70,48 @@ orthogonal to layers 1–3 — it is audit metadata, not a governance layer.
 See `docs/openai_frontier_vs_google_vs_microsoft.md` and
 `docs/grok_databricks_naming_convergence.md` for platform comparisons.
 
+## KYC extraction pipeline
+
+The companion adapter in `adapters/kyc_extraction/` builds compliance ontologies
+from enterprise source systems before they enter the portability layer.
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Oracle DDL   │  │ Confluence   │  │    Slack     │  │  Salesforce  │  │   MongoDB    │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │                 │                 │
+       └─────────────────┴────────┬────────┴─────────────────┴─────────────────┘
+                                  ▼
+                    ┌─────────────────────────────┐
+                    │  LLM-assisted extraction    │
+                    │  ASSUMPTION + SOURCE tags   │
+                    └──────────────┬──────────────┘
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │  merge_deduplicator.py      │
+                    │  Canonical vocabulary TTL   │
+                    └──────────────┬──────────────┘
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │  validator.py               │
+                    │  OWL consistency + SHACL    │
+                    └──────────────┬──────────────┘
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │  OWL Portability Layer      │
+                    │  nine platform adapters     │
+                    └─────────────────────────────┘
+```
+
+| Module | Role |
+|---|---|
+| `oracle_ddl_parser.py` | DDL → OWL class candidates |
+| `confluence_chunker.py` | Policy sections → axiom candidates |
+| `slack_filter.py` | Conflict detection + filtered axioms |
+| `merge_deduplicator.py` | Synonym clustering → canonical Turtle |
+| `validator.py` | OWL consistency, SHACL, expert review report |
+| `kyc_sample.ttl` | Reference KYC ontology fragment |
+
 ## Why OWL + SHACL in the middle
 
 - **Portability**: The same shapes run in CI, pre-flight tools, and runtime—no forked “rules as code” per vendor.
@@ -82,6 +124,7 @@ See `docs/openai_frontier_vs_google_vs_microsoft.md` and
 pytest tests/test_grok_databricks_adapter.py -v
 pytest tests/test_openai_frontier_adapter.py -v
 pytest tests/test_nine_platform_portability.py -v
+pytest tests/test_kyc_extraction.py -v
 pytest tests/
 ```
 
