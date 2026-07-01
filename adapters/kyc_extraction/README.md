@@ -2,6 +2,7 @@
 
 Companion code for the Medium article:
 "I Asked an LLM to Build JPMorgan's Compliance Ontology. Here's What It Got Wrong."
+[MEDIUM ARTICLE LINK — add when published]
 
 This adapter extracts a KYC compliance ontology from five enterprise source 
 systems — Oracle/SQL, Confluence, Slack, Salesforce, and MongoDB — using an 

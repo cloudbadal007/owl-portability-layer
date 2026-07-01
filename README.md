@@ -278,6 +278,8 @@ See [docs/adding_adapters.md](docs/adding_adapters.md).
   The Semantic Layer Battle Just Got Its Biggest Contender](https://medium.com/@cloudpankaj/openai-frontier-vs-google-knowledge-catalog-vs-microsoft-fabric-iq-the-semantic-layer-battle-just-113a75550f95)
 - [Elon Musk's Grok Just Landed on Databricks. The Semantic Layer Gap
   I Found in February Is Still There.](https://medium.com/@cloudpankaj/elon-musks-grok-just-landed-on-databricks-the-semantic-layer-gap-i-found-in-february-is-still-0fba34ddb76c)
+- I Asked an LLM to Build JPMorgan's Compliance Ontology. Here's
+  What It Got Wrong. [MEDIUM ARTICLE LINK — add when published]
 
 See also:
 
