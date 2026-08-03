@@ -1,7 +1,5 @@
 # IBM watsonx vs Google Knowledge Catalog vs AWS AgentCore: The Three-Way Semantic Layer Comparison
 
-> Part of the OntoArc enterprise ontology toolkit.
-
 ## 1. Overview
 
 By IBM Think 2026, three hyperscalers had each shipped a distinct answer to

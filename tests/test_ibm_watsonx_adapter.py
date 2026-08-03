@@ -1,6 +1,4 @@
 """Tests for IBM watsonx.data Context adapter (policy vs proof).
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -21,7 +19,6 @@ from owl_portability.adapters.ibm_watsonx import (  # noqa: E402
     WatsonxValidationResult,
 )
 
-
 @pytest.fixture
 def adapter() -> IBMWatsonxContextAdapter:
     """IBM watsonx adapter in simulation mode with the procurement ontology."""
@@ -30,7 +27,6 @@ def adapter() -> IBMWatsonxContextAdapter:
         shacl_path=str(ROOT / "ontologies" / "procurement_shacl.ttl"),
         simulation_mode=True,
     )
-
 
 def _compliance_hold_query(
     *,
@@ -57,7 +53,6 @@ def _compliance_hold_query(
         watsonx_semantic_class=semantic_class,
     )
 
-
 def test_ibm_deny_skips_shacl(adapter: IBMWatsonxContextAdapter) -> None:
     """IBM denial is sufficient — SHACL not invoked.
 
@@ -69,7 +64,6 @@ def test_ibm_deny_skips_shacl(adapter: IBMWatsonxContextAdapter) -> None:
     assert result.shacl_valid is False
     assert result.safe_to_execute is False
     assert result.violations == ["IBM watsonx.data Context denied this action."]
-
 
 def test_ibm_permit_shacl_blocks(adapter: IBMWatsonxContextAdapter) -> None:
     """IBM's runtime policy permitted the action.
@@ -83,7 +77,6 @@ def test_ibm_permit_shacl_blocks(adapter: IBMWatsonxContextAdapter) -> None:
     assert result.shacl_valid is False
     assert result.safe_to_execute is False
     assert any("Legal approval" in v for v in result.violations)
-
 
 def test_both_layers_pass(adapter: IBMWatsonxContextAdapter) -> None:
     """Both IBM governance and OWL/SHACL pass.
@@ -101,7 +94,6 @@ def test_both_layers_pass(adapter: IBMWatsonxContextAdapter) -> None:
     assert result.shacl_valid is True
     assert result.safe_to_execute is True
 
-
 def test_ibm_to_owl_class_mapping() -> None:
     """IBM watsonx uses its own semantic tagging vocabulary.
 
@@ -110,7 +102,6 @@ def test_ibm_to_owl_class_mapping() -> None:
     and the formal OWL type hierarchy.
     """
     assert IBMWatsonxContextAdapter.IBM_TO_OWL_MAP["compliance_hold"] == "ComplianceHold"
-
 
 def test_safe_to_execute_requires_both_layers() -> None:
     """Verifies AND logic: IBM governance AND SHACL must both pass.
@@ -131,21 +122,17 @@ def test_safe_to_execute_requires_both_layers() -> None:
     assert deny_valid.safe_to_execute is False
     assert permit_valid.safe_to_execute is True
 
-
 def test_write_simulation_mode(adapter: IBMWatsonxContextAdapter) -> None:
     """Simulation mode returns True without credentials."""
     assert adapter.write({"paymentId": "P-1"}, "PaymentEvent") is True
-
 
 def test_health_check_simulation(adapter: IBMWatsonxContextAdapter) -> None:
     """Health check succeeds offline when simulation_mode is enabled."""
     assert adapter.health_check() is True
 
-
 def test_platform_name(adapter: IBMWatsonxContextAdapter) -> None:
     """Platform identifier is stable for routing and metrics."""
     assert adapter.platform_name == "ibm_watsonx_context"
-
 
 def test_seven_platform_demo_imports() -> None:
     """Integration test: all seven platform adapters can be instantiated together.

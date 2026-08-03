@@ -117,6 +117,3 @@ layer.register_adapter(
 See `examples/demo_dataverse_bridge.py` for the full two-layer validation demo
 and `examples/demo_six_platform_portability.py` for cross-platform portability.
 
----
-
-Part of the OntoArc enterprise ontology toolkit.

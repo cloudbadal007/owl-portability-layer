@@ -13,8 +13,6 @@ Microsoft's agentic stack.
 
 When you leave Microsoft Dataverse, delete this file. Your OWL ontology and
 SHACL constraints remain unchanged.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -47,7 +45,6 @@ try:
 except ImportError:
     _HTTPX_AVAILABLE = False
 
-
 @dataclass
 class DataverseAgentQuery:
     """Inbound Dataverse agent action with semantic grounding context."""
@@ -59,7 +56,6 @@ class DataverseAgentQuery:
     payload: dict[str, Any]
     dataverse_context: dict[str, Any]
     skill_applied: str | None = None
-
 
 @dataclass
 class DataverseValidationResult:
@@ -76,7 +72,6 @@ class DataverseValidationResult:
     def __post_init__(self) -> None:
         """Both layers must pass — understanding AND governance."""
         self.safe_to_execute = self.dataverse_grounded and self.shacl_valid
-
 
 class DataverseSemanticAdapter(BaseAdapter):
     """Bridge Dataverse semantic grounding with OWL/SHACL domain validation.

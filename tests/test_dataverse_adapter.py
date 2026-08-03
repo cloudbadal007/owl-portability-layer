@@ -1,6 +1,4 @@
 """Tests for Microsoft Dataverse semantic adapter.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -32,7 +30,6 @@ from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter  
 
 PROC = Namespace("http://enterprise.org/procurement#")
 
-
 @pytest.fixture
 def adapter() -> DataverseSemanticAdapter:
     """Dataverse adapter in simulation mode with procurement ontology."""
@@ -41,7 +38,6 @@ def adapter() -> DataverseSemanticAdapter:
         shacl_path=str(ROOT / "ontologies" / "procurement_shacl.ttl"),
         simulation_mode=True,
     )
-
 
 def _compliance_hold_query(
     *,
@@ -70,7 +66,6 @@ def _compliance_hold_query(
         else {"skill_applied": "PaymentApprovalWorkflow"},
     )
 
-
 def test_empty_context_blocks_execution(adapter: DataverseSemanticAdapter) -> None:
     """Verifies that missing Dataverse semantic grounding prevents execution.
 
@@ -82,7 +77,6 @@ def test_empty_context_blocks_execution(adapter: DataverseSemanticAdapter) -> No
     assert result.safe_to_execute is False
     assert result.dataverse_grounded is False
     assert result.shacl_valid is False
-
 
 def test_compliance_hold_without_approver_blocked(
     adapter: DataverseSemanticAdapter,
@@ -97,7 +91,6 @@ def test_compliance_hold_without_approver_blocked(
     assert result.safe_to_execute is False
     assert any("Legal approval" in v for v in result.violations)
 
-
 def test_compliance_hold_with_approver_passes(adapter: DataverseSemanticAdapter) -> None:
     """Verifies that ComplianceHold release succeeds when both layers pass.
 
@@ -108,7 +101,6 @@ def test_compliance_hold_with_approver_passes(adapter: DataverseSemanticAdapter)
     )
     assert result.shacl_valid is True
     assert result.safe_to_execute is True
-
 
 def test_dataverse_field_mapping(adapter: DataverseSemanticAdapter) -> None:
     """Verifies standard Dynamics 365 field names map to OWL properties.
@@ -136,7 +128,6 @@ def test_dataverse_field_mapping(adapter: DataverseSemanticAdapter) -> None:
     assert len(amounts) == 1
     assert float(amounts[0]) == 75000.0
 
-
 def test_dynamics365_entity_mapping(adapter: DataverseSemanticAdapter) -> None:
     """Verifies standard Dynamics 365 entities map to OWL classes.
 
@@ -156,21 +147,17 @@ def test_dynamics365_entity_mapping(adapter: DataverseSemanticAdapter) -> None:
     owl_class = adapter.DATAVERSE_TO_OWL_MAP.get(query.entity_class, query.entity_class)
     assert owl_class == "Vendor"
 
-
 def test_write_simulation_mode(adapter: DataverseSemanticAdapter) -> None:
     """Verifies simulation mode works without credentials."""
     assert adapter.write({"paymentId": "P-1"}, "PaymentEvent") is True
-
 
 def test_health_check_simulation(adapter: DataverseSemanticAdapter) -> None:
     """Verifies health check passes in simulation mode."""
     assert adapter.health_check() is True
 
-
 def test_platform_name(adapter: DataverseSemanticAdapter) -> None:
     """Verifies platform identifier for routing decisions."""
     assert adapter.platform_name == "microsoft_dataverse"
-
 
 def test_safe_to_execute_requires_both_layers() -> None:
     """Verifies AND logic: both grounding and SHACL must pass for execution.
@@ -203,7 +190,6 @@ def test_safe_to_execute_requires_both_layers() -> None:
         shacl_valid=True,
     )
     assert r3.safe_to_execute is True
-
 
 def test_six_platform_demo_runs(monkeypatch: pytest.MonkeyPatch) -> None:
     """Integration test verifying all six platform adapters instantiate together."""

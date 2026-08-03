@@ -1,8 +1,6 @@
 """IBM watsonx.data Context + OWL/SHACL parallel governance demo.
 
 Runs entirely in simulation_mode — zero IBM credentials required.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -23,7 +21,6 @@ from owl_portability.adapters.ibm_watsonx import (  # noqa: E402
     WatsonxContextQuery,
     WatsonxValidationResult,
 )
-
 
 def _print_case(
     label: str,
@@ -47,7 +44,6 @@ def _print_case(
     if detail:
         print(f"   ↳ {detail}")
     print()
-
 
 def main() -> None:
     print(
@@ -211,7 +207,6 @@ def main() -> None:
         "  Build the proofs.\n"
         "================================================================="
     )
-
 
 if __name__ == "__main__":
     main()

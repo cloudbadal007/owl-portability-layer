@@ -1,6 +1,4 @@
 """Tests for cross-platform offboarding validator.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -18,10 +16,8 @@ from owl_portability.validators.offboarding_validator import (  # noqa: E402
     OffboardingEvent,
 )
 
-
 def _validator() -> CrossPlatformOffboardingValidator:
     return CrossPlatformOffboardingValidator(str(ROOT / "ontologies" / "employee_offboarding.ttl"))
-
 
 def test_clean_offboarding_passes() -> None:
     event = OffboardingEvent(
@@ -38,7 +34,6 @@ def test_clean_offboarding_passes() -> None:
     assert violations == []
     assert event.severity == "none"
 
-
 def test_ad_not_revoked_blocks_certification() -> None:
     event = OffboardingEvent(
         employee_id="EMP-4471",
@@ -53,7 +48,6 @@ def test_ad_not_revoked_blocks_certification() -> None:
     assert conforms is False
     assert any("🚨" in message for message in violations)
     assert event.severity == "critical"
-
 
 def test_finance_before_hr_flagged() -> None:
     event = OffboardingEvent(
@@ -70,7 +64,6 @@ def test_finance_before_hr_flagged() -> None:
     assert any("⚠️" in message for message in violations)
     assert event.severity == "warning"
 
-
 def test_missing_termination_date_flagged() -> None:
     event = OffboardingEvent(
         employee_id="EMP-9999",
@@ -84,7 +77,6 @@ def test_missing_termination_date_flagged() -> None:
     assert conforms is False
     assert any("⚠️ AUDIT RISK" in message for message in violations)
     assert event.severity == "warning"
-
 
 def test_all_three_scenarios_in_report() -> None:
     validator = _validator()
@@ -127,7 +119,6 @@ def test_all_three_scenarios_in_report() -> None:
     assert "Employee: EMP-4471" in report
     assert "Employee: EMP-4472" in report
     assert "Cross-platform offboarding report. Review all flagged events before certifying completion." in report
-
 
 def test_validator_populates_event_violations_field() -> None:
     event = OffboardingEvent(

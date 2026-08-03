@@ -1,6 +1,4 @@
 """Validator modules for cross-platform semantic controls.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from owl_portability.validators.offboarding_validator import (

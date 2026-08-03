@@ -1,6 +1,4 @@
 """Four-platform portability demo with identical SHACL governance.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -23,7 +21,6 @@ from owl_portability.adapters.google_knowledge_catalog import (  # noqa: E402
 from owl_portability.adapters.palantir import PalantirFoundryAdapter  # noqa: E402
 from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter  # noqa: E402
 from owl_portability.layer import OWLPortabilityLayer  # noqa: E402
-
 
 def main() -> None:
     layer = OWLPortabilityLayer(
@@ -87,7 +84,6 @@ def main() -> None:
         "Change target_platform. The governance never changes.\n"
         "Platforms: ServiceNow | Google | Microsoft | Palantir"
     )
-
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,4 @@
 """Seven-platform portability demo with identical SHACL governance.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -26,7 +24,6 @@ from owl_portability.adapters.ibm_watsonx import IBMWatsonxContextAdapter  # noq
 from owl_portability.adapters.palantir import PalantirFoundryAdapter  # noqa: E402
 from owl_portability.adapters.servicenow import ServiceNowContextEngineAdapter  # noqa: E402
 from owl_portability.layer import OWLPortabilityLayer  # noqa: E402
-
 
 def main() -> None:
     layer = OWLPortabilityLayer(
@@ -122,7 +119,6 @@ def main() -> None:
         "\nPlatforms: IBM watsonx | Dataverse | AgentCore | ServiceNow\n"
         "           Google | Fabric IQ | Palantir"
     )
-
 
 if __name__ == "__main__":
     main()

@@ -13,8 +13,6 @@ cross-platform gap Cedar cannot see.
 
 When you leave AWS, delete this file.
 Your OWL ontology and SHACL constraints remain unchanged.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -47,7 +45,6 @@ try:
 except ImportError:
     _BOTO3_AVAILABLE = False
 
-
 @dataclass
 class AgentCoreToolCall:
     """Inbound AgentCore Gateway tool invocation with Cedar decision metadata."""
@@ -59,7 +56,6 @@ class AgentCoreToolCall:
     gateway_arn: str
     cedar_decision: str
     semantic_class: str
-
 
 class AgentCoreSemanticAdapter(BaseAdapter):
     """Bridge AgentCore Cedar policy outcomes with OWL/SHACL domain validation.

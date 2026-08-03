@@ -15,8 +15,6 @@ as of Think 2026. Production validation pending.
 When IBM's Context layer evolves from private preview to GA,
 update the production methods. Your OWL ontology and SHACL
 constraints remain unchanged.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -49,7 +47,6 @@ try:
 except ImportError:
     _HTTPX_AVAILABLE = False
 
-
 @dataclass
 class WatsonxContextQuery:
     """Inbound watsonx.data Context action with IBM runtime governance metadata.
@@ -73,7 +70,6 @@ class WatsonxContextQuery:
     watsonx_context: dict
     ibm_governance_decision: str
     watsonx_semantic_class: Optional[str] = None
-
 
 @dataclass
 class WatsonxValidationResult:
@@ -100,7 +96,6 @@ class WatsonxValidationResult:
         self.safe_to_execute = (
             self.ibm_governance == "permit" and self.shacl_valid
         )
-
 
 class IBMWatsonxContextAdapter(BaseAdapter):
     """Bridge IBM watsonx.data Context runtime governance with OWL/SHACL proofs.

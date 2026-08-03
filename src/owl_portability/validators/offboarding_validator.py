@@ -1,6 +1,5 @@
 """Cross-Platform Offboarding Validator — enforces the employee offboarding semantic contract across
 ServiceNow (HR + IT), Microsoft (identity), and Salesforce (Finance).
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -23,7 +22,6 @@ _AUDIT_RISK_TERMINATION_MSG = (
     "Required for legal and payroll compliance."
 )
 
-
 @dataclass
 class OffboardingEvent:
     """Represents one employee offboarding event across domains."""
@@ -37,7 +35,6 @@ class OffboardingEvent:
     termination_date: Optional[str] = None
     violations: list[str] = field(default_factory=list)
     severity: str = "none"  # "none" | "warning" | "critical"
-
 
 class CrossPlatformOffboardingValidator:
     """Validate employee offboarding events with OWL + SHACL guards."""

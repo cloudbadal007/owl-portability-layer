@@ -1,6 +1,4 @@
 """Google Knowledge Catalog adapter (simulation-first).
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -8,7 +6,6 @@ from __future__ import annotations
 from typing import Any
 
 from owl_portability.adapters.base import BaseAdapter
-
 
 class GoogleKnowledgeCatalogAdapter(BaseAdapter):
     """Simulated Google adapter for portability demos."""

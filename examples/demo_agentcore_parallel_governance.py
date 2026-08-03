@@ -1,8 +1,6 @@
 """Cedar + OWL/SHACL parallel governance demo for AWS AgentCore.
 
 Runs entirely in simulation_mode — zero AWS credentials required.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -22,7 +20,6 @@ from owl_portability.adapters.agentcore import (  # noqa: E402
     AgentCoreSemanticAdapter,
     AgentCoreToolCall,
 )
-
 
 def _run_case(
     adapter: AgentCoreSemanticAdapter,
@@ -58,7 +55,6 @@ def _run_case(
         print(f"   ↳ {detail}")
     print()
     return cedar_status, semantic_label, final_label
-
 
 def main() -> None:
     print(
@@ -211,7 +207,6 @@ def main() -> None:
         "  AWS ships Cedar. You build the OWL/SHACL layer.\n"
         "================================================================="
     )
-
 
 if __name__ == "__main__":
     main()

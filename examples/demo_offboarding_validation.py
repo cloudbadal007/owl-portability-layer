@@ -1,6 +1,4 @@
 """Cross-platform offboarding validation demo (offline only).
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -17,7 +15,6 @@ from owl_portability.validators.offboarding_validator import (  # noqa: E402
     CrossPlatformOffboardingValidator,
     OffboardingEvent,
 )
-
 
 def main() -> None:
     validator = CrossPlatformOffboardingValidator(
@@ -98,7 +95,6 @@ def main() -> None:
     print("SUMMARY")
     print(f"Total: 3 | Approved: {approved} | Flagged: {flagged} | Blocked: {blocked}")
     print("=================================================================")
-
 
 if __name__ == "__main__":
     main()

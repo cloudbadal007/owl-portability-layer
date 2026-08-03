@@ -289,6 +289,3 @@ See also:
 - `docs/architecture.md` — nine-platform architecture, KYC extraction pipeline, governance layers
 - `adapters/kyc_extraction/README.md` — KYC ontology extraction from five enterprise sources
 
----
-
-Part of the OntoArc enterprise ontology toolkit.

@@ -8,8 +8,6 @@ relationships the way CMDB does — this is a known gap as of Knowledge 2026.
 
 When you leave ServiceNow, delete this file.
 Your OWL ontology and SHACL constraints remain unchanged.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -19,7 +17,6 @@ from typing import Any
 import httpx
 
 from owl_portability.adapters.base import BaseAdapter
-
 
 class ServiceNowContextEngineAdapter(BaseAdapter):
     """Adapter for ServiceNow Context Engine / Table API writes and reads."""

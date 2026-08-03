@@ -1,8 +1,6 @@
 """Microsoft Dataverse + OWL/SHACL bridge demo.
 
 Runs entirely in simulation_mode — zero Dataverse credentials required.
-
-Part of the OntoArc enterprise ontology toolkit.
 """
 
 from __future__ import annotations
@@ -23,7 +21,6 @@ from owl_portability.adapters.dataverse import (  # noqa: E402
     DataverseSemanticAdapter,
 )
 
-
 def _print_result(label: str, result, *, context_line: str, detail: str | None = None) -> str:
     """Print formatted two-layer validation output and return outcome token."""
     grounded_icon = "✅ YES" if result.dataverse_grounded else "❌ NO"
@@ -43,7 +40,6 @@ def _print_result(label: str, result, *, context_line: str, detail: str | None =
     if result.safe_to_execute:
         return "EXECUTED"
     return "DENIED"
-
 
 def main() -> None:
     print(
@@ -160,7 +156,6 @@ def main() -> None:
         "  Build the governance.\n"
         "================================================================="
     )
-
 
 if __name__ == "__main__":
     main()
